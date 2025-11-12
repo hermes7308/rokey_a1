@@ -3,6 +3,9 @@
 ## UI(client)
 
 ## Backend(server)
+```
+pip3 install firebase-admin
+```
 
 ## ROS2(ros2_ws)
 
