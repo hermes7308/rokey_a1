@@ -2,8 +2,10 @@ import firebase_admin
 from firebase_admin import credentials, db
 
 # Path to your service account key file
-cred = credentials.Certificate("./serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+cred = credentials.Certificate("./ros2_ws/examples/serviceAccountKey.json")
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://ros2-monitor-default-rtdb.firebaseio.com'
+})
 
 # Get a Database Reference
 ref = db.reference("users")  # Reference to the 'users' node
