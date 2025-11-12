@@ -11,7 +11,7 @@ firebase_admin.initialize_app(cred, {
 ref = db.reference("users")  # Reference to the 'users' node
 
 # Write Data
-# Overwrite data at 'users/user1'
+# Overwrite data at 'users/user1'.
 ref.child("user1").set({"name": "Alice", "email": "alice@example.com"})
 
 # Update specific fields in 'users/user2'
