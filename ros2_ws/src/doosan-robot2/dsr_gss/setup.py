@@ -24,6 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'joint_coordinate_uploader = dsr_gss.joint_coordinate_uploader:main',
+            'task_coordinate_uploader = dsr_gss.task_coordinate_uploader:main',
         ],
     },
 )
