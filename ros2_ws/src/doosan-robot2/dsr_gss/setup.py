@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'joint_coordinate_uploader = dsr_gss.joint_coordinate_uploader:main',
             'task_coordinate_uploader = dsr_gss.task_coordinate_uploader:main',
+            'control_event_listener = dsr_gss.control_event_listener:main',
         ],
     },
 )
