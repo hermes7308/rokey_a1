@@ -30,6 +30,6 @@ firebase_admin.initialize_app(
 # ref.child("user1").delete()
 
 
-def get_firebase_db_reference(node_path):
+def get_firebase_db_reference():
     """Get a reference to a specific node in the Firebase Realtime Database."""
-    return db.reference(node_path)
+    return db.reference("dsr_gss")

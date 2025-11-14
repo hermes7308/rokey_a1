@@ -9,7 +9,7 @@ from dsr_gss.firebase_utils import get_firebase_db_reference
 class JointCoordinateUploader(Node):
     def __init__(self):
         super().__init__("joint_coordinate_uploader")
-        self.db_ref = get_firebase_db_reference("robot_status")
+        self.db_ref = get_firebase_db_reference()
         # 조인트 좌표계 구독 설정
         self.sub = self.create_subscription(
             JointState, "/dsr01/joint_states", self.listener_callback, 10
@@ -18,7 +18,7 @@ class JointCoordinateUploader(Node):
 
     def listener_callback(self, msg):
         data = [pos for pos in msg.position]
-        self.db_ref.child("dsr_gss").child("joint_coordinate").set({
+        self.db_ref.child("joint_coordinate").set({
             "data": data,
             "timestamp": int(time.time() * 1000)
         })

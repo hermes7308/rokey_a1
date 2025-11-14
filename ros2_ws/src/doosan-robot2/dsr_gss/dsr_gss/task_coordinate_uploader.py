@@ -58,7 +58,7 @@ def perform_task():
 
         if p is not None:
             print(f"\nUploading position: {p}\n")
-            db_ref.child("dsr_gss").child("task_coordinate").set(
+            db_ref.child("task_coordinate").set(
                 {"data": p[0], "timestamp": int(time.time() * 1000)}
             )
         wait(2.0)
@@ -71,7 +71,7 @@ def main(args=None):
     """메인 함수: ROS2 노드 초기화 및 동작 수행"""
     rclpy.init(args=args)
     node = rclpy.create_node("task_coordinate_uploader", namespace=ROBOT_ID)
-    db_ref = get_firebase_db_reference("robot_status")
+    db_ref = get_firebase_db_reference()
 
     # DR_init에 노드 설정
     DR_init.__dsr__node = node
