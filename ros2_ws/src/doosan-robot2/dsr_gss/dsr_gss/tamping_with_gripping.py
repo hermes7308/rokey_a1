@@ -52,7 +52,7 @@ def perform_task(treeLocation: list):
     from DSR_ROBOT2 import (
         movej,
         movel,
-        posj, get_current_posx, movec, posx
+        posj, get_current_posx, movec, posx, set_digital_output, wait, ON, OFF
     )
 
     # home 위치로 돌아가는 작업
@@ -60,9 +60,27 @@ def perform_task(treeLocation: list):
     P0 = posj(0,0,90,0,90,0)
     movej(P0, vel=20, acc=30)
 
+    ## gripping 동작 추가
+    pt = posx(450.0, 200.0, 100.0, 0.0, 180.0, 0.0) # 잡을 위치
+    pt1 = copy.deepcopy(pt)
+    pt1[2] += 30.0
+    movel(pt1, vel=30, acc=100)
+    # gripper 열기
+    set_digital_output(1, ON)
+    set_digital_output(2, OFF)
+    wait(1)
+    movel(pt, vel=30, acc=100)
+    # gripper 닫기
+    set_digital_output(1, OFF)
+    set_digital_output(2, OFF)
+    wait(1)
+    movel(pt1, vel=30, acc=100)
+
     r = 100.0
 
-    c = posx(treeLocation)
+    c, _ = get_current_posx() # 자료형 문제
+    for i in range(6):
+        c[i] = treeLocation[i]
     p0 = copy.deepcopy(c)
     p0[1] -= r
     movel(p0, vel=30, acc=100)

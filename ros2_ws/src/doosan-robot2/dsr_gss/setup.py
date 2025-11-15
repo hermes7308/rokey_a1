@@ -27,7 +27,8 @@ setup(
             'tamping = dsr_gss.tamping:main',
             'tamping_client = dsr_gss.tamping_client:main',
             'test_server = dsr_gss.test_server:main',
-            'tampingCopy = dsr_gss.tampingCopy:main'
+            'tampingCopy = dsr_gss.tampingCopy:main',
+            'tamping_with_gripping = dsr_gss.tamping_with_gripping:main'
         ],
     },
 )
