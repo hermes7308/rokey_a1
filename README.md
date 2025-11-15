@@ -4,10 +4,16 @@
 
 ## Backend(server)
 ```
-pip3 install firebase-admin
+pip3 install firebase-admin Flask
 ```
 
 ## ROS2(ros2_ws)
+
+### Python Dependencies
+
+```
+pip3 install firebase-admin
+```
 
 ### Workspace path 설정
 1. git clone 을 받아서 ~/workspace/rokey_a1 에 저장
