@@ -52,13 +52,15 @@ def perform_task():
     from DSR_ROBOT2 import (
         movej,
         movel,
-        posj, get_current_posx, movec, posx, set_digital_output, wait, ON, OFF
+        posj, get_current_posx, movec, posx, set_digital_output, wait, ON, OFF,
+        set_ref_coord, task_compliance_ctrl, set_desired_force, DR_FC_MOD_REL,
+        check_force_condition, DR_AXIS_Z, DR_BASE
     )
 
     # home 위치로 돌아가는 작업
     # 경우에 따라 삭제 가능
-    P0 = posj(0,0,90,0,90,0)
-    movej(P0, vel=20, acc=30)
+    j0 = posj(0,0,90,0,90,0)
+    movej(j0, vel=20, acc=30)
 
     ## gripping 동작 추가
     pt = posx(450.0, 200.0, 100.0, 0.0, 180.0, 0.0) # 잡을 위치
@@ -83,6 +85,7 @@ def perform_task():
                      posx(350.0, -300.0, 50.0, 0.0, 180.0, 0.0)]
 
     r = 10.0
+    loopN = 4
 
     for treeLocation in treeLocations:
         c = posx(treeLocation)
@@ -91,8 +94,6 @@ def perform_task():
         movel(p0, vel=30, acc=100)
 
         mp0 = copy.deepcopy(p0)
-
-        loopN = 4
 
         for i in range(loopN):
             p0[2] -= 10.0
@@ -104,6 +105,43 @@ def perform_task():
             mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
             mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
             movec(mp0,p0,vel=60,acc=100)
+
+    ## tool 복귀
+    # 충돌 대비해서 목표 위치보다 수직으로 위인 지점으로 선형 이송 시키기
+    ptb1, _ = get_current_posx()
+    ptb1[2] += 100.0
+    movel(ptb1, vel=60, acc=100)
+    # tool을 원래 위치로 꽂는 것이 아닌 특정한 위치로 놓을 경우
+    # 아래 코드로 구현
+    # ptb2 = posx(놓을 위치)
+    # ptb2[2] += 10.0
+    # movel(ptb2)
+    ##
+    # tool 꽂을 곳 위로 이동
+    movel(pt1, vel=60, acc=100)
+    # tool 꽂기
+    set_ref_coord(1) # Tool 좌표계 설정
+    task_compliance_ctrl(stx=[1000, 1000, 200, 200, 200, 200])
+    wait(0.5) # 안정화 대기(필수)
+    set_desired_force(fd=[0, 0, 15, 0, 0, 0], dir=[0, 0, 1, 0, 0, 0], mod=DR_FC_MOD_REL)
+    while check_force_condition(DR_AXIS_Z, min=10):
+        print("Tool 삽입중")
+        wait(0.5)
+    ##
+    # gripper 열기
+    set_digital_output(1, ON)
+    set_digital_output(2, OFF)
+    wait(1)
+    # 좌표계 복귀
+    set_ref_coord(DR_BASE)
+    # 충돌 대비해서 위로 올리기
+    pc = get_current_posx()
+    pc[2] += 100.0
+    movel(pc, vel=60, acc=100)
+    # home으로 돌아오기
+    movej(j0, vel=20, acc=30)
+
+
 
 def main(args=None):
     """메인 함수: ROS2 노드 초기화 및 동작 수행"""
