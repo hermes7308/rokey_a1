@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, Blueprint
+from flask import Flask, jsonify, Blueprint, request
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -24,6 +24,17 @@ def api_about():
         }
     )
 
+@api_bp.route("/movel", methods=["POST"])
+def api_movel():
+    data = request.get_json()
+    print("MOVEL endpoint called: ", data)
+    return jsonify(
+        {
+            "status": "success",
+            "endpoint": "/api/movel",
+            "message": "MOVEL command received and processed.",
+        }
+    )
 
 app = Flask(__name__)
 app.register_blueprint(api_bp)
