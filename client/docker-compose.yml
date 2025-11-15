@@ -1,0 +1,14 @@
+networks:
+  sillasol-net:
+    external: true
+
+services:
+  aria:
+    hostname: rokey-gss-frontend
+    container_name: rokey-gss-frontend
+    build:
+      context: .
+    image: steve0314/rokey-gss-frontend
+    restart: always
+    networks:
+      - sillasol-net
