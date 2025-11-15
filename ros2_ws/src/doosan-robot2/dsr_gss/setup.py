@@ -24,6 +24,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'tamping = dsr_gss.tamping:main',
+            'tamping_client = dsr_gss.tamping_client:main',
+            'test_server = dsr_gss.test_server:main',
+            'tampingCopy = dsr_gss.tampingCopy:main'
         ],
     },
 )
