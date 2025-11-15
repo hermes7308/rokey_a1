@@ -12,3 +12,5 @@ services:
     restart: always
     networks:
       - sillasol-net
+    ports:
+      - "5000:5000"
