@@ -78,9 +78,7 @@ def perform_task(treeLocation: list):
 
     r = 100.0
 
-    c, _ = get_current_posx() # 자료형 문제
-    for i in range(6):
-        c[i] = treeLocation[i]
+    c = posx(treeLocation)
     p0 = copy.deepcopy(c)
     p0[1] -= r
     movel(p0, vel=30, acc=100)

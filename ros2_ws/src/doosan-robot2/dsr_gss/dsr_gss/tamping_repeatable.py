@@ -64,42 +64,46 @@ def perform_task():
     pt = posx(450.0, 200.0, 100.0, 0.0, 180.0, 0.0) # 잡을 위치
     pt1 = copy.deepcopy(pt)
     pt1[2] += 30.0
-    movel(pt1, vel=30, acc=100)
+    movel(pt1, vel=60, acc=100)
     # gripper 열기
     set_digital_output(1, ON)
     set_digital_output(2, OFF)
     wait(1)
-    movel(pt, vel=30, acc=100)
+    movel(pt, vel=60, acc=100)
     # gripper 닫기
     set_digital_output(1, OFF)
     set_digital_output(2, OFF)
     wait(1)
-    movel(pt1, vel=30, acc=100)
+    movel(pt1, vel=60, acc=100)
 
     # 나무 위치
-    treeLocation = posx(300.0, -300.0, 50.0, 0.0, 180.0, 0.0)
+    treeLocations = [posx(500.0, -300.0, 50.0, 0.0, 180.0, 0.0),
+                     posx(450.0, -300.0, 50.0, 0.0, 180.0, 0.0),
+                     posx(400.0, -300.0, 50.0, 0.0, 180.0, 0.0),
+                     posx(350.0, -300.0, 50.0, 0.0, 180.0, 0.0)]
 
-    r = 100.0
+    r = 10.0
 
-    c = posx(treeLocation)
-    p0 = copy.deepcopy(c)
-    p0[1] -= r
-    movel(p0, vel=30, acc=100)
-
-    mp0 = copy.deepcopy(p0)
-
-    loopN = 10
-
-    for i in range(loopN):
-        p0[2] -= 10.0
+    for treeLocation in treeLocations:
+        c = posx(treeLocation)
+        p0 = copy.deepcopy(c)
+        p0[1] += r
         movel(p0, vel=30, acc=100)
-        p0[2] += 10.0
-        movel(p0, vel=30, acc=100)
-        p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
-        p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
-        mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
-        mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
-        movec(mp0,p0,vel=30,acc=100)
+
+        mp0 = copy.deepcopy(p0)
+
+        loopN = 4
+
+        for i in range(loopN):
+            p0[2] -= 10.0
+            movel(p0, vel=60, acc=100)
+            p0[2] += 10.0
+            movel(p0, vel=60, acc=100)
+            p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+            p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+            mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+            mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+            movec(mp0,p0,vel=60,acc=100)
 
 def main(args=None):
     """메인 함수: ROS2 노드 초기화 및 동작 수행"""

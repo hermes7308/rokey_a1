@@ -29,7 +29,8 @@ setup(
             'test_server = dsr_gss.test_server:main',
             'tampingCopy = dsr_gss.tampingCopy:main',
             'tamping_with_gripping = dsr_gss.tamping_with_gripping:main',
-            'tamping_single_node = dsr_gss.tamping_single_node:main'
+            'tamping_single_node = dsr_gss.tamping_single_node:main',
+            'tamping_repeatable = dsr_gss.tamping_repeatable:main'
         ],
     },
 )
