@@ -1,43 +1,46 @@
 from flask import Flask, jsonify, Blueprint, request
+from flask_cors import CORS
+from firebase_utils import get_firebase_db_reference
+import time
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
+db_ref = get_firebase_db_reference()
 
 
-@api_bp.route("/")
-def api_base():
-    return jsonify(
-        {
-            "status": "success",
-            "endpoint": "/api",
-            "message": "Welcome to the base API endpoint!",
-        }
-    )
-
-
-@api_bp.route("/about")
-def api_about():
-    return jsonify(
-        {
-            "status": "success",
-            "endpoint": "/api/about",
-            "description": "This is the About API page.",
-        }
-    )
-
-@api_bp.route("/movel", methods=["POST"])
-def api_movel():
+@api_bp.route("/execute_action", methods=["POST"])
+def execute_action():
     data = request.get_json()
-    print("MOVEL endpoint called: ", data)
+
+    previousActionStatus = db_ref.child("control_event/action").child("status").get()
+
+    if previousActionStatus is not None and previousActionStatus != "done":
+        return jsonify(
+            {
+                "status": "failed",
+                "message": "Previous action is not finished.",
+            }
+        )
+
+    db_ref.child("control_event/action").set(
+        {
+            "actionType": data["actionType"],
+            "data": data["data"],
+            "status": "ready",
+            "timestamp": int(time.time() * 1000),
+        }
+    )
     return jsonify(
         {
             "status": "success",
-            "endpoint": "/api/movel",
-            "message": "MOVEL command received and processed.",
+            "endpoint": "/api/execute_action",
+            "message": f"{data['actionType']} command received and processed.",
         }
     )
+
 
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(api_bp)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host="0.0.0.0", port=5000)

@@ -22,8 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          `API Error: ${response.status} - ${
-            errorData.message || response.statusText
+          `API Error: ${response.status} - ${errorData.message || response.statusText
           }`
         );
       }
@@ -83,13 +82,15 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", (e) => {
       const { panelTitle, values } = getFormData(e);
 
-      if (panelTitle.toLowerCase().includes("movel")) {
-        apiFetch("movel", { method: "POST", body: JSON.stringify(values) })
-          .then((data) => console.log(data))
-          .catch((err) => console.log(err));
-      } else if (panelTitle.toLowerCase().includes("movej")) {
-        alert(`'MOVEJ' 명령이 실행(시뮬레이션)되었습니다.`);
+      let actionType = panelTitle.toLowerCase().includes("movel") ? "movel" : "movej";
+
+      const data = {
+        actionType: actionType,
+        data: values
       }
+      apiFetch("execute_action", { method: "POST", body: JSON.stringify(data) })
+        .then((data) => alert(data.message))
+        .catch((err) => console.log(err));
     });
   });
 

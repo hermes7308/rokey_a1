@@ -4,7 +4,7 @@
 
 ## Backend(server)
 ```
-pip3 install firebase-admin Flask
+pip3 install firebase-admin Flask flask-cors
 ```
 
 ## ROS2(ros2_ws)
