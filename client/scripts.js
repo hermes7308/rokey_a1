@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE_URL = "http://localhost:5000/api"; // Local Development
-  // const API_BASE_URL = "/api" // Production Deployment
+  // const API_BASE_URL = "http://localhost:5000/api"; // Local Development
+  const API_BASE_URL = "/api" // Production Deployment
 
   async function apiFetch(endpoint, options = {}) {
     const url = `${API_BASE_URL}/${endpoint}`;
