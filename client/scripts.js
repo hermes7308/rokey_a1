@@ -99,6 +99,42 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", (e) => {
       console.log(`[${e.target.textContent}] 상태/도구 명령 전송 시도`);
       alert(`'${e.target.textContent}' 명령이 실행(시뮬레이션)되었습니다.`);
+      // Home
+      if (e.target.textContent.toLowerCase().includes("home")) {
+        apiFetch("execute_action", {
+          method: "POST", body: JSON.stringify({
+            actionType: "movej",
+            data: {
+              "J1": 0.0,
+              "J2": 0.0,
+              "J3": 90,
+              "J4": 0,
+              "J5": 90,
+              "J6": 0,
+              "Velocity": 60,
+              "Acceleration": 60
+            }
+          })
+        })
+          .then((res) => alert(res.message))
+          .catch((err) => console.log(err));
+        return;
+      }
+      // 현재 좌표로 초기화
+      if (e.target.textContent.toLowerCase().includes("현재 좌표로 초기화")) {
+        apiFetch("get_current_coordinates", { method: "GET" })
+          .then((res) => {
+            if (res.status === "success"){
+              let idx = 0;
+              document.querySelector(".joint-control").querySelectorAll("input[type=number]").forEach((inputElement)=> inputElement.value = res.data.joint_coordinates.data[idx++])
+              idx = 0;
+              document.querySelector(".cartesian-control").querySelectorAll("input[type=number]").forEach((inputElement)=> inputElement.value = res.data.joint_coordinates.data[idx++])
+              return;
+            }
+          })
+          .catch((err) => console.log(err));
+        return;
+      }
     });
   });
 });

@@ -1,3 +1,4 @@
+from shlex import join
 from flask import Flask, jsonify, Blueprint, request
 from flask_cors import CORS
 from firebase_utils import get_firebase_db_reference
@@ -34,6 +35,24 @@ def execute_action():
             "status": "success",
             "endpoint": "/api/execute_action",
             "message": f"{data['actionType']} command received and processed.",
+        }
+    )
+
+
+@api_bp.route("/get_current_coordinates", methods=["GET"])
+def get_coordinates():
+    joint_coordinates = db_ref.child("joint_coordinate").get()
+    task_coordinates = db_ref.child("task_coordinate").get()
+
+    return jsonify(
+        {
+            "status": "success",
+            "endpoint": "/api/get_current_coordinates",
+            "message": "Get Current coordinates.",
+            "data": {
+                "joint_coordinates": joint_coordinates,
+                "task_coordinates": task_coordinates,
+            },
         }
     )
 
