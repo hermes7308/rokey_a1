@@ -1,0 +1,235 @@
+/* 기본 리셋 및 폰트 설정 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    color: #34495e; /* Doosan Blue-ish */
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Main Layout */
+.main-content {
+    display: flex;
+    gap: 20px;
+}
+
+.control-panels {
+    flex: 2; /* Joint and Cartesian controls take up more space */
+    display: flex;
+    gap: 20px;
+}
+
+.status-panel {
+    flex: 1; /* Status panel takes up less space */
+    min-width: 350px; /* 고정 폭 */
+}
+
+/* Panels */
+.panel {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex: 1;
+}
+
+.panel h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.2em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+
+/* Input Groups */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.joint-inputs, .cartesian-inputs {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.speed-acc {
+    border-top: 1px dashed #ccc;
+    padding-top: 15px;
+}
+
+.speed-acc > label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.speed-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.speed-input label {
+    flex-basis: 40%;
+}
+
+.speed-input input {
+    flex-basis: 55%;
+}
+
+/* Control Buttons (MOVE, COPY) */
+.control-button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.movej-button {
+    background-color: #3498db; /* Blue */
+    color: white;
+}
+
+.movel-button {
+    background-color: #e74c3c; /* Red/Maroon */
+    color: white;
+}
+
+.copy-button {
+    background-color: #bdc3c7; /* Gray */
+    color: #333;
+}
+
+.movej-button:hover { background-color: #2980b9; }
+.movel-button:hover { background-color: #c0392b; }
+.copy-button:hover { background-color: #95a5a6; }
+
+/* --- Status Panel Styles --- */
+.status-panel {
+    background-color: #ecf0f1; /* Light background for the status section */
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.status-panel h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+/* Status Buttons */
+.status-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.status-button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.status-button.green { background-color: #2ecc71; }
+.status-button.gray { background-color: #7f8c8d; }
+.status-button.yellow { background-color: #f39c12; }
+.status-button.blue { background-color: #3498db; }
+
+.status-button:hover { opacity: 0.9; }
+
+/* Status Info */
+.status-info {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.status-info h3 {
+    font-size: 1em;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.status-info p {
+    font-weight: bold;
+    color: #34495e;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.status-info p:last-child {
+    margin-bottom: 0;
+}
+
+.tool-value {
+    color: #3498db !important; /* Blue for the tool names */
+}
+
+/* Log Panel */
+.log-panel h3 {
+    font-size: 1em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+#robot-log {
+    background-color: #333;
+    color: #eee;
+    padding: 10px;
+    border-radius: 4px;
+    height: 300px; /* Sufficient height for logs */
+    overflow-y: scroll;
+    white-space: pre-wrap; /* Wrap long lines */
+    font-family: monospace;
+    font-size: 0.9em;
+    border: 1px solid #000;
+}
