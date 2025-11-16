@@ -1,10 +1,11 @@
 {
   "name": "ROKEY",
   "short_name": "ROKEY",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
   "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
   "icons": [
     {
       "src": "img/gss_robot_img.jpg",
