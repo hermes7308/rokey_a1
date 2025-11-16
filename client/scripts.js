@@ -250,5 +250,29 @@ document.addEventListener("DOMContentLoaded", () => {
     task_coordinates = coordinates;
     console.log(task_coordinates);
   });
+
+  // current_status
+  db.ref("dsr_gss/control_event/current_status").on("value", (snapshot) => {
+    const status = snapshot.val();
+    document.querySelector(
+      "#current-robot-status"
+    ).innerText = `${status.toLowerCase()}`;
+  });
+  db.ref("dsr_gss/control_event/action").on("value", (snapshot) => {
+    const action = snapshot.val();
+    if (action.status == "DONE") {
+      document.querySelector("#waiting-move-action").innerText = "None";
+      return;
+    }
+
+    const description =
+      action.actionType == "movej"
+        ? `J1: ${action.data["J1"]}, J2: ${action.data["J2"]}, J3: ${action.data["J3"]}, J4: ${action.data["J4"]}, J5: ${action.data["J5"]}, J6: ${action.data["J6"]}`
+        : `X: ${action.data["X"]}, Y: ${action.data["Y"]}, Z: ${action.data["Z"]}, A: ${action.data["A"]}, B: ${action.data["B"]}, C: ${action.data["C"]}`;
+
+    document.querySelector(
+      "#waiting-move-action"
+    ).innerText = `[${action.status.toUpperCase()}] - ${action.actionType} -  ${description}`;
+  })
   // ------------------------- 외부 연결 부분 종료 --------------------------
 });
