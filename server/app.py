@@ -56,6 +56,19 @@ def get_coordinates():
     )
 
 
+@api_bp.route("/clear_logs", methods=["POST"])
+def clear_logs():
+    db_ref.child("logs").set("")
+
+    return jsonify(
+        {
+            "status": "success",
+            "endpoint": "/api/clear_logs",
+            "message": "Clear logs",
+        }
+    )
+
+
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(api_bp)

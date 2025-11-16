@@ -145,18 +145,10 @@
 
           <div class="panel glassmorphism log-panel-section full-width-log">
             <h2>Real-time Robot Script Log</h2>
-            <pre id="robot-log">
-[12:32:05] [CMD_BRG] [movej] 좌표 갱신 완료.
-[14:05:03] [INFO] dsc01_spawner_dsr_controller2]: [92mConfigured and activated [1mDsrController2[0m
-[14:15:24] [CMD_BRG]
-[새 홈 복귀 명령] : 실행 스레드 시작
-[14:15:24] [CMD_BRG]
-[홈 복귀 좌표 초기화]
-[14:15:24] [CMD_BRG] > [go_home] 목표 좌표: [0.0, 0.0, 90.0, 0.0, 90.0, 0.0]
-[14:15:27] [CMD_BRG] DEBUG: go_home (move) 반환값: 0
-[14:15:28] [CMD_BRG] [go_home] 현재 좌표 동기...
-[14:15:28] [CMD_BRG] [go_home] 좌표 갱신 완료.
-            </pre>
+            <pre id="robot-log"></pre>
+            <button id="clear-log-btn" class="control-button secondary">
+              Clear
+            </button>
           </div>
         </div>
 
@@ -165,11 +157,15 @@
             <h2>Status & Tools</h2>
 
             <div class="status-buttons">
-              <button class="status-button green">TCP 확인</button>
-              <button class="status-button gray">Tool 확인</button>
+              <!-- <button class="status-button green">TCP 확인</button>
+              <button class="status-button gray">Tool 확인</button> -->
               <button class="status-button yellow">HOME</button>
               <button class="status-button blue">현재 좌표로 초기화</button>
-              <button class="status-button" id="install-pwa-btn" style="display: none;">
+              <button
+                class="status-button"
+                id="install-pwa-btn"
+                style="display: none"
+              >
                 App 설치
               </button>
             </div>
@@ -205,16 +201,8 @@
         </div>
       </div>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="scripts.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then(() => console.log("SW registered"))
-            .catch((err) => console.error("SW fail", err));
-        });
-      }
-    </script>
   </body>
 </html>

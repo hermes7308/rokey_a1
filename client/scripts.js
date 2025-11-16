@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ------------------------- 공통 부분 시작 --------------------------
   // const API_BASE_URL = "http://localhost:5000/api"; // Local Development
-  const API_BASE_URL = "/api" // Production Deployment
+  const API_BASE_URL = "/api"; // Production Depleoyment
 
   async function apiFetch(endpoint, options = {}) {
     const url = `${API_BASE_URL}/${endpoint}`;
@@ -22,7 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          `API Error: ${response.status} - ${errorData.message || response.statusText
+          `API Error: ${response.status} - ${
+            errorData.message || response.statusText
           }`
         );
       }
@@ -32,7 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
       throw error;
     }
   }
+  // ------------------------- 공통 부분 종료 --------------------------
 
+  // ------------------------- UI event 부분 시작 --------------------------
   // Range Slider 값 표시 기능
   const sliders = document.querySelectorAll(".slider");
   sliders.forEach((slider) => {
@@ -82,12 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", (e) => {
       const { panelTitle, values } = getFormData(e);
 
-      let actionType = panelTitle.toLowerCase().includes("movel") ? "movel" : "movej";
+      let actionType = panelTitle.toLowerCase().includes("movel")
+        ? "movel"
+        : "movej";
 
       const data = {
         actionType: actionType,
-        data: values
-      }
+        data: values,
+      };
       apiFetch("execute_action", { method: "POST", body: JSON.stringify(data) })
         .then((data) => alert(data.message))
         .catch((err) => console.log(err));
@@ -102,19 +108,20 @@ document.addEventListener("DOMContentLoaded", () => {
       // Home
       if (e.target.textContent.toLowerCase().includes("home")) {
         apiFetch("execute_action", {
-          method: "POST", body: JSON.stringify({
+          method: "POST",
+          body: JSON.stringify({
             actionType: "movej",
             data: {
-              "J1": 0.0,
-              "J2": 0.0,
-              "J3": 90,
-              "J4": 0,
-              "J5": 90,
-              "J6": 0,
-              "Velocity": 60,
-              "Acceleration": 60
-            }
-          })
+              J1: 0.0,
+              J2: 0.0,
+              J3: 90,
+              J4: 0,
+              J5: 90,
+              J6: 0,
+              Velocity: 60,
+              Acceleration: 60,
+            },
+          }),
         })
           .then((res) => alert(res.message))
           .catch((err) => console.log(err));
@@ -124,11 +131,25 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.textContent.toLowerCase().includes("현재 좌표로 초기화")) {
         apiFetch("get_current_coordinates", { method: "GET" })
           .then((res) => {
-            if (res.status === "success"){
+            if (res.status === "success") {
               let idx = 0;
-              document.querySelector(".joint-control").querySelectorAll("input[type=number]").forEach((inputElement)=> inputElement.value = res.data.joint_coordinates.data[idx++])
+              document
+                .querySelector(".joint-control")
+                .querySelectorAll("input[type=number]")
+                .forEach(
+                  (inputElement) =>
+                    (inputElement.value =
+                      res.data.joint_coordinates.data[idx++])
+                );
               idx = 0;
-              document.querySelector(".cartesian-control").querySelectorAll("input[type=number]").forEach((inputElement)=> inputElement.value = res.data.joint_coordinates.data[idx++])
+              document
+                .querySelector(".cartesian-control")
+                .querySelectorAll("input[type=number]")
+                .forEach(
+                  (inputElement) =>
+                    (inputElement.value =
+                      res.data.joint_coordinates.data[idx++])
+                );
               return;
             }
           })
@@ -137,6 +158,26 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // Clear Log Button
+  const clearLogBtn = document.getElementById("clear-log-btn");
+  clearLogBtn.addEventListener("click", () => {
+    apiFetch("clear_logs", { method: "POST" })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  });
+  // ------------------------- UI event 부분 종료 --------------------------
+
+  // ------------------------- 외부 연결 부분 시작 --------------------------
+  // PWA
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("SW registered"))
+        .catch((err) => console.error("SW fail", err));
+    });
+  }
 
   // PWA Installation Logic
   let deferredPrompt;
@@ -167,8 +208,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  window.addEventListener('appinstalled', (evt) => {
+  window.addEventListener("appinstalled", (evt) => {
     // Log install to analytics
-    console.log('INSTALL: Success');
+    console.log("INSTALL: Success");
   });
+
+  // Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLxzHrMxTnEFLeqJ78f_3cRll1Vbxm6Yg",
+    authDomain: "ros2-monitor.firebaseapp.com",
+    databaseURL: "https://ros2-monitor-default-rtdb.firebaseio.com",
+    projectId: "ros2-monitor",
+    storageBucket: "ros2-monitor.firebasestorage.app",
+    messagingSenderId: "76402393723",
+    appId: "1:76402393723:web:4ba54806c364836145d8de",
+  };
+  // Firebase 앱 초기화
+  firebase.initializeApp(firebaseConfig);
+
+  // 3. Realtime Database 참조 가져오기
+  const db_ref = firebase.database();
+
+  // 2단계 Python 코드에서 'robot_status/completed_jobs' 경로에 저장했음
+  const jobCountRef = db_ref.ref("dsr_gss/logs");
+
+  // 4. 데이터 실시간 수신 (핵심!)
+  // 'on' 리스너는 DB 데이터가 변경될 때마다 *자동으로* 호출됩니다.
+  jobCountRef.on("value", (snapshot) => {
+    const logs = snapshot.val(); // DB에서 값 가져오기
+    let textContext = "";
+    console.log(logs);
+
+    Object.keys(logs).forEach(
+      (key) => (textContext += `${logs[key].message}\n`)
+    );
+    document.getElementById("robot-log").innerText = textContext;
+
+    // 5. HTML 요소 업데이트
+    // document.getElementById("job-count").innerText = jobCount || 0;
+  });
+  // ------------------------- 외부 연결 부분 종료 --------------------------
 });
