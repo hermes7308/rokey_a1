@@ -370,6 +370,13 @@ input[type="number"]:focus {
 .status-button.gray { background-color: #c7c7cc; color: #333; } 
 .status-button.yellow { background-color: #ffcc00; color: #333; } 
 .status-button.blue { background-color: #5ac8fa; } 
+#install-pwa-btn {
+  background-color: #8A2BE2; /* A nice purple */
+  color: white;
+  grid-column: span 2; /* Make it wider */
+  text-align: center;
+}
+
 
 
 .status-button:hover {
