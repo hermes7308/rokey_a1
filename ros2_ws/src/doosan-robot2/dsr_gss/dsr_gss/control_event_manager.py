@@ -5,6 +5,7 @@ import subprocess
 import rclpy
 from rclpy.node import Node
 from dsr_gss.firebase_utils import get_firebase_db_reference, info
+from dsr_msgs2.srv import MoveJoint, MoveLine
 
 
 RUNNING = "RUNNING"
@@ -79,6 +80,12 @@ class ControlEventManager(Node):
 
         self.start_listener()
 
+        self.movej_cli = self.create_client(MoveJoint, "dsr01/motion/move_joint")
+        self.movel_cli = self.create_client(MoveLine, "dsr01/motion/move_line")
+
+        self.movej_req = MoveJoint.Request()
+        self.movel_req = MoveLine.Request()
+
     def update_status_from_node(self):
         """실제 노드 상태를 기준으로 DB 데이터 업데이트"""
         node_running = NodeController.is_running(MAIN_NODE_NAME)
@@ -113,6 +120,70 @@ class ControlEventManager(Node):
             NodeController.stop(MAIN_NODE_NAME)
             self.db_ref.child("current_status").set(STOPPED)
 
+    def on_move_action(self, action):
+        if action["status"] == "DONE":
+            return
+
+        if action["actionType"] == "movej":
+            while not self.movej_cli.wait_for_service(timeout_sec=1.0):
+                self.get_logger().info("서비스 대기 중: dsr01/motion/move_joint")
+
+            self.movej_req.pos = [
+                float(action["data"]["J1"]),
+                float(action["data"]["J2"]),
+                float(action["data"]["J3"]),
+                float(action["data"]["J4"]),
+                float(action["data"]["J5"]),
+                float(action["data"]["J6"]),
+            ]
+            self.movej_req.acc = float(action["data"]["Acceleration"])
+            self.movej_req.vel = float(action["data"]["Velocity"])
+
+            movej_future = self.movej_cli.call_async(self.movej_req)
+            print("서비스 호출 중: dsr01/motion/move_joint")
+            movej_future.add_done_callback(self.movej_response_callback)
+            return
+
+        if action["actionType"] == "movel":
+            while not self.movel_cli.wait_for_service(timeout_sec=1.0):
+                self.get_logger().info("서비스 대기 중: dsr01/motion/move_line")
+
+            self.movej_req.pos = [
+                float(action["data"]["X"]),
+                float(action["data"]["Y"]),
+                float(action["data"]["Z"]),
+                float(action["data"]["A"]),
+                float(action["data"]["B"]),
+                float(action["data"]["C"]),
+            ]
+            self.movej_req.acc = float(action["data"]["Acceleration"])
+            self.movej_req.vel = float(action["data"]["Velocity"])
+
+            movej_future = self.movel_cli.call_async(self.movel_req)
+            print("서비스 호출 중: dsr01/motion/move_line")
+            movej_future.add_done_callback(self.movel_response_callback)
+            return
+
+    def movej_response_callback(self, future):
+        try:
+            response = future.result()
+            if response.success:
+                self.get_logger().info("movej 이동 완료")
+        except Exception as e:
+            self.get_logger().error(f"서비스 호출 중 오류 발생(콜백): {e}")
+        finally:
+            self.db_ref.child("action/status").set("DONE")
+
+    def movel_response_callback(self, future):
+        try:
+            response = future.result()
+            if response.success:
+                self.get_logger().info("movel 이동 완료")
+        except Exception as e:
+            self.get_logger().error(f"서비스 호출 중 오류 발생(콜백): {e}")
+        finally:
+            self.db_ref.child("action/status").set("DONE")
+
     def listener(self, event):
         print(f"\nEvent Type: {event.event_type}")
         print(f"Path: {event.path}")
@@ -128,6 +199,11 @@ class ControlEventManager(Node):
 
         if event.path == "/required_status":
             self.on_required_status_changed(event.data)
+            return
+
+        if event.path == "/action":
+            print(event.data)
+            self.on_move_action(event.data)
             return
 
     def start_listener(self):

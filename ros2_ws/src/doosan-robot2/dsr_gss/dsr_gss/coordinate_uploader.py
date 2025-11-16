@@ -23,19 +23,17 @@ class CoordinateUploader(Node):
         self.task_req = GetCurrentPosx.Request()
         self.joint_req = GetCurrentPosj.Request()
 
-        while not self.task_cli.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info("서비스 대기 중: dsr01/aux_control/get_current_posx")
-
-        while not self.joint_cli.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info("서비스 대기 중: dsr01/aux_control/get_current_posj")
-
     def timer_callback(self):
         print("좌표계 업로더 동작 중...")
 
+        while not self.task_cli.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info("서비스 대기 중: dsr01/aux_control/get_current_posx")
         task_future = self.task_cli.call_async(self.task_req)
         print("서비스 호출 중: dsr01/aux_control/get_current_posx")
         task_future.add_done_callback(self.task_response_callback)
 
+        while not self.joint_cli.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info("서비스 대기 중: dsr01/aux_control/get_current_posj")
         joint_future = self.joint_cli.call_async(self.joint_req)
         print("서비스 호출 중: dsr01/aux_control/get_current_posj")
         joint_future.add_done_callback(self.joint_response_callback)
