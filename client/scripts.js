@@ -68,6 +68,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   };
 
+  const getActionButtons = () => {
+    const moveButtons = document.querySelectorAll(".move-button");
+    const homeButton = [...document.querySelectorAll(".status-button")].filter(
+      (btn) => btn.innerHTML.toLowerCase().includes("home")
+    )[0];
+    return [...moveButtons, homeButton];
+  };
+
+  const activateActionButtons = () => {
+    getActionButtons().forEach((button) => {
+      button.disabled = false;
+    });
+  };
+
+  const deactivateActionButtons = () => {
+    getActionButtons().forEach((button) => {
+      button.disabled = true;
+    });
+  };
+
   // MOVE 버튼 클릭 시 이벤트 (예시)
   document.querySelectorAll(".move-button").forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -123,12 +143,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // 시작
       if (e.target.textContent.toLowerCase().includes("시작")) {
         console.log("시작");
+        deactivateActionButtons();
         db.ref("dsr_gss/control_event/required_status").set("RUNNING");
         return;
       }
       // 종료
       if (e.target.textContent.toLowerCase().includes("종료")) {
         console.log("종료");
+        activateActionButtons();
         db.ref("dsr_gss/control_event/required_status").set("STOPPED");
         return;
       }
@@ -142,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .set("")
       .then(() => console.log("로그 초기화"));
   });
+
   // ------------------------- UI event 부분 종료 --------------------------
 
   // ------------------------- 외부 연결 부분 시작 --------------------------
@@ -207,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
   db.ref("dsr_gss/logs").on("value", (snapshot) => {
     const logs = snapshot.val(); // DB에서 값 가져오기
     let textContext = "";
-    console.log(logs);
 
     Object.keys(logs).forEach(
       (key) => (textContext += `${logs[key].message}\n`)
