@@ -254,7 +254,7 @@ input[type="number"]:focus {
 }
 
 .speed-input label {
-  flex-basis: 30%;
+  width: 150px; /* Set a fixed width for consistent label sizing */
   margin-right: 0;
   color: #f0f0f0;
 }
