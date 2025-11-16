@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".status-button").forEach((button) => {
     button.addEventListener("click", (e) => {
       console.log(`[${e.target.textContent}] 상태/도구 명령 전송 시도`);
-      alert(`'${e.target.textContent}' 명령이 실행(시뮬레이션)되었습니다.`);
+      // alert(`'${e.target.textContent}' 명령이 실행(시뮬레이션)되었습니다.`);
       // Home
       if (e.target.textContent.toLowerCase().includes("home")) {
         apiFetch("execute_action", {
@@ -129,31 +129,26 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // 현재 좌표로 초기화
       if (e.target.textContent.toLowerCase().includes("현재 좌표로 초기화")) {
-        apiFetch("get_current_coordinates", { method: "GET" })
-          .then((res) => {
-            if (res.status === "success") {
-              let idx = 0;
-              document
-                .querySelector(".joint-control")
-                .querySelectorAll("input[type=number]")
-                .forEach(
-                  (inputElement) =>
-                    (inputElement.value =
-                      res.data.joint_coordinates.data[idx++])
-                );
-              idx = 0;
-              document
-                .querySelector(".cartesian-control")
-                .querySelectorAll("input[type=number]")
-                .forEach(
-                  (inputElement) =>
-                    (inputElement.value =
-                      res.data.joint_coordinates.data[idx++])
-                );
-              return;
-            }
-          })
-          .catch((err) => console.log(err));
+        if (joint_coordinates != null) {
+          let idx = 0;
+          document
+            .querySelector(".joint-control")
+            .querySelectorAll("input[type=number]")
+            .forEach(
+              (inputElement) =>
+                (inputElement.value = joint_coordinates[idx++])
+            );
+        }
+        if (task_coordinates != null) {
+          let idx = 0;
+          document
+            .querySelector(".cartesian-control")
+            .querySelectorAll("input[type=number]")
+            .forEach(
+              (inputElement) =>
+                (inputElement.value = task_coordinates[idx++])
+            );
+        }
         return;
       }
     });
@@ -223,18 +218,12 @@ document.addEventListener("DOMContentLoaded", () => {
     messagingSenderId: "76402393723",
     appId: "1:76402393723:web:4ba54806c364836145d8de",
   };
-  // Firebase 앱 초기화
   firebase.initializeApp(firebaseConfig);
 
-  // 3. Realtime Database 참조 가져오기
+  // logs
   const db_ref = firebase.database();
 
-  // 2단계 Python 코드에서 'robot_status/completed_jobs' 경로에 저장했음
-  const jobCountRef = db_ref.ref("dsr_gss/logs");
-
-  // 4. 데이터 실시간 수신 (핵심!)
-  // 'on' 리스너는 DB 데이터가 변경될 때마다 *자동으로* 호출됩니다.
-  jobCountRef.on("value", (snapshot) => {
+  db_ref.ref("dsr_gss/logs").on("value", (snapshot) => {
     const logs = snapshot.val(); // DB에서 값 가져오기
     let textContext = "";
     console.log(logs);
@@ -243,9 +232,20 @@ document.addEventListener("DOMContentLoaded", () => {
       (key) => (textContext += `${logs[key].message}\n`)
     );
     document.getElementById("robot-log").innerText = textContext;
+  });
 
-    // 5. HTML 요소 업데이트
-    // document.getElementById("job-count").innerText = jobCount || 0;
+  // current_coordinates
+  let joint_coordinates = null;
+  let task_coordinates = null;
+  db_ref.ref("dsr_gss/joint_coordinate/data").on("value", (snapshot) => {
+    const coordinates = snapshot.val();
+    joint_coordinates = coordinates;
+    console.log(joint_coordinates);
+  });
+  db_ref.ref("dsr_gss/task_coordinate/data").on("value", (snapshot) => {
+    const coordinates = snapshot.val();
+    task_coordinates = coordinates;
+    console.log(task_coordinates);
   });
   // ------------------------- 외부 연결 부분 종료 --------------------------
 });
