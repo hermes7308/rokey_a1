@@ -1,8 +1,9 @@
 import os
+import time
 import firebase_admin
 from firebase_admin import credentials, db
 
-key_path = os.path.expanduser('~/ros2_ws/keys/firebaseServiceAccountKey.json')
+key_path = os.path.expanduser("~/ros2_ws/keys/firebaseServiceAccountKey.json")
 cred = credentials.Certificate(key_path)
 firebase_admin.initialize_app(
     cred, {"databaseURL": "https://ros2-monitor-default-rtdb.firebaseio.com"}
@@ -33,3 +34,29 @@ firebase_admin.initialize_app(
 def get_firebase_db_reference():
     """Get a reference to a specific node in the Firebase Realtime Database."""
     return db.reference("dsr_gss")
+
+
+def _add_log(level, message):
+    get_firebase_db_reference().child("logs").push(
+        {
+            "timestamp": int(time.time() * 1000),
+            "level": level.upper(),
+            "message": message,
+        }
+    )
+
+
+def debug(message):
+    _add_log("INFO", message)
+
+
+def info(message):
+    _add_log("INFO", message)
+
+
+def warning(message):
+    _add_log("INFO", message)
+
+
+def error(message):
+    _add_log("INFO", message)

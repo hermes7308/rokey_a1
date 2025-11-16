@@ -4,7 +4,7 @@ import sys
 import subprocess
 import rclpy
 from rclpy.node import Node
-from dsr_gss.firebase_utils import get_firebase_db_reference
+from dsr_gss.firebase_utils import get_firebase_db_reference, info
 
 
 RUNNING = "RUNNING"
@@ -66,11 +66,11 @@ class NodeController:
             print(f"[ERROR] 노드 종료 실패: {e}")
 
 
-class ControlEventListener(Node):
+class ControlEventManager(Node):
     """Firebase 실시간 이벤트 감시 및 노드 제어 클래스"""
 
     def __init__(self):
-        super().__init__("control_event_listener")
+        super().__init__("control_event_manager")
         self.db_ref = get_firebase_db_reference().child("control_event")
         self.status = {
             "current_status": STOPPED,
@@ -148,9 +148,10 @@ def main(args=None):
     rclpy.init(args=args)
 
     # 2. ControlEventListener 노드 생성
-    node = ControlEventListener()
+    node = ControlEventManager()
 
     try:
+        info("ControlEventManager 를 실행합니다.")
         # 3. spin() 함수로 노드 실행 및 유지
         # 이 함수는 메시지가 오기를 기다리며 콜백을 처리합니다.
         # Ctrl+C (SIGINT)를 받으면 자동으로 블록이 풀리고 다음 코드로 넘어갑니다.

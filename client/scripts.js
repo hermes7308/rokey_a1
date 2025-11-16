@@ -1,5 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ------------------------- 공통 부분 시작 --------------------------
+  const formatTimestamp = (timestampMs) => {
+    const dateObject = new Date(timestampMs);
+
+    // 숫자를 두 자릿수로 만들기 위한 헬퍼 함수
+    const pad2 = (num) => String(num).padStart(2, "0");
+
+    const year = dateObject.getFullYear();
+    // getMonth()는 0부터 시작하므로 1을 더해야 합니다.
+    const month = pad2(dateObject.getMonth() + 1);
+    const day = pad2(dateObject.getDate());
+
+    const hours = pad2(dateObject.getHours());
+    const minutes = pad2(dateObject.getMinutes());
+    const seconds = pad2(dateObject.getSeconds());
+
+    // YYYY-MM-DD hh:mm:ss 형태로 조합
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
   // ------------------------- 공통 부분 종료 --------------------------
 
   // ------------------------- UI event 부분 시작 --------------------------
@@ -232,7 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let textContext = "";
 
     Object.keys(logs).forEach(
-      (key) => (textContext += `${logs[key].message}\n`)
+      (key) =>
+        (textContext += `[${formatTimestamp(logs[key].timestamp)}][${
+          logs[key].level
+        }] - ${logs[key].message}\n`)
     );
     document.getElementById("robot-log").innerText = textContext;
   });
@@ -272,7 +293,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector(
       "#waiting-move-action"
-    ).innerText = `[${action.status.toUpperCase()}] - ${action.actionType} -  ${description}`;
-  })
+    ).innerText = `[${action.status.toUpperCase()}] - ${
+      action.actionType
+    } -  ${description}`;
+  });
   // ------------------------- 외부 연결 부분 종료 --------------------------
 });
