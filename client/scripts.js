@@ -1,39 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ------------------------- 공통 부분 시작 --------------------------
-  // const API_BASE_URL = "http://localhost:5000/api"; // Local Development
-  const API_BASE_URL = "/api"; // Production Depleoyment
-
-  async function apiFetch(endpoint, options = {}) {
-    const url = `${API_BASE_URL}/${endpoint}`;
-
-    const defaultHeaders = {
-      "Content-Type": "application/json",
-    };
-
-    const finalOptions = {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
-    };
-
-    try {
-      const response = await fetch(url, finalOptions);
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          `API Error: ${response.status} - ${
-            errorData.message || response.statusText
-          }`
-        );
-      }
-      return response.json();
-    } catch (error) {
-      console.error("Fetch failed:", error.message);
-      throw error;
-    }
-  }
   // ------------------------- 공통 부분 종료 --------------------------
 
   // ------------------------- UI event 부분 시작 --------------------------
@@ -81,6 +47,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  const executeAction = (actionType, data) => {
+    db.ref("dsr_gss/control_event/action/status")
+      .get()
+      .then((snapshot) => {
+        const currentActionStatus = snapshot.val();
+        if (currentActionStatus && currentActionStatus != "DONE") {
+          alert("현재 실행중인 작업이 있습니다.");
+          return;
+        }
+
+        db.ref("dsr_gss/control_event/action").set({
+          actionType: actionType,
+          data: data,
+          status: "READY",
+          timestamp: (timestamp = Date.now()),
+        });
+        alert("새로운 작업이 등록되었습니다.");
+      });
+    return;
+  };
+
   // MOVE 버튼 클릭 시 이벤트 (예시)
   document.querySelectorAll(".move-button").forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -90,41 +77,25 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "movel"
         : "movej";
 
-      const data = {
-        actionType: actionType,
-        data: values,
-      };
-      apiFetch("execute_action", { method: "POST", body: JSON.stringify(data) })
-        .then((data) => alert(data.message))
-        .catch((err) => console.log(err));
+      executeAction(actionType, values);
     });
   });
 
   // Status 버튼 클릭 시 이벤트 (예시)
   document.querySelectorAll(".status-button").forEach((button) => {
     button.addEventListener("click", (e) => {
-      console.log(`[${e.target.textContent}] 상태/도구 명령 전송 시도`);
-      // alert(`'${e.target.textContent}' 명령이 실행(시뮬레이션)되었습니다.`);
       // Home
       if (e.target.textContent.toLowerCase().includes("home")) {
-        apiFetch("execute_action", {
-          method: "POST",
-          body: JSON.stringify({
-            actionType: "movej",
-            data: {
-              J1: 0.0,
-              J2: 0.0,
-              J3: 90,
-              J4: 0,
-              J5: 90,
-              J6: 0,
-              Velocity: 60,
-              Acceleration: 60,
-            },
-          }),
-        })
-          .then((res) => alert(res.message))
-          .catch((err) => console.log(err));
+        executeAction("movej", {
+          J1: 0.0,
+          J2: 0.0,
+          J3: 90,
+          J4: 0,
+          J5: 90,
+          J6: 0,
+          Velocity: 60,
+          Acceleration: 60,
+        });
         return;
       }
       // 현재 좌표로 초기화
@@ -135,8 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .querySelector(".joint-control")
             .querySelectorAll("input[type=number]")
             .forEach(
-              (inputElement) =>
-                (inputElement.value = joint_coordinates[idx++])
+              (inputElement) => (inputElement.value = joint_coordinates[idx++])
             );
         }
         if (task_coordinates != null) {
@@ -145,10 +115,21 @@ document.addEventListener("DOMContentLoaded", () => {
             .querySelector(".cartesian-control")
             .querySelectorAll("input[type=number]")
             .forEach(
-              (inputElement) =>
-                (inputElement.value = task_coordinates[idx++])
+              (inputElement) => (inputElement.value = task_coordinates[idx++])
             );
         }
+        return;
+      }
+      // 시작
+      if (e.target.textContent.toLowerCase().includes("시작")) {
+        console.log("시작");
+        db.ref("dsr_gss/control_event/required_status").set("RUNNING");
+        return;
+      }
+      // 종료
+      if (e.target.textContent.toLowerCase().includes("종료")) {
+        console.log("종료");
+        db.ref("dsr_gss/control_event/required_status").set("STOPPED");
         return;
       }
     });
@@ -157,9 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Clear Log Button
   const clearLogBtn = document.getElementById("clear-log-btn");
   clearLogBtn.addEventListener("click", () => {
-    apiFetch("clear_logs", { method: "POST" })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    db.ref("dsr_gss/logs")
+      .set("")
+      .then(() => console.log("로그 초기화"));
   });
   // ------------------------- UI event 부분 종료 --------------------------
 
@@ -221,9 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
   firebase.initializeApp(firebaseConfig);
 
   // logs
-  const db_ref = firebase.database();
+  const db = firebase.database();
 
-  db_ref.ref("dsr_gss/logs").on("value", (snapshot) => {
+  db.ref("dsr_gss/logs").on("value", (snapshot) => {
     const logs = snapshot.val(); // DB에서 값 가져오기
     let textContext = "";
     console.log(logs);
@@ -237,12 +218,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // current_coordinates
   let joint_coordinates = null;
   let task_coordinates = null;
-  db_ref.ref("dsr_gss/joint_coordinate/data").on("value", (snapshot) => {
+  db.ref("dsr_gss/joint_coordinate/data").on("value", (snapshot) => {
     const coordinates = snapshot.val();
     joint_coordinates = coordinates;
     console.log(joint_coordinates);
   });
-  db_ref.ref("dsr_gss/task_coordinate/data").on("value", (snapshot) => {
+  db.ref("dsr_gss/task_coordinate/data").on("value", (snapshot) => {
     const coordinates = snapshot.val();
     task_coordinates = coordinates;
     console.log(task_coordinates);
