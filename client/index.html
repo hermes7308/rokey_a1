@@ -74,7 +74,9 @@
                 <button class="control-button move-button primary">
                   MOVE(J)
                 </button>
-                <button class="control-button copy-button secondary">COPY</button>
+                <button class="control-button copy-button secondary">
+                  COPY
+                </button>
               </div>
             </div>
 
@@ -134,11 +136,13 @@
                 <button class="control-button move-button primary">
                   MOVE(L)
                 </button>
-                <button class="control-button copy-button secondary">COPY</button>
+                <button class="control-button copy-button secondary">
+                  COPY
+                </button>
               </div>
             </div>
           </div>
-          
+
           <div class="panel glassmorphism log-panel-section full-width-log">
             <h2>Real-time Robot Script Log</h2>
             <pre id="robot-log">
@@ -165,7 +169,13 @@
               <button class="status-button gray">Tool 확인</button>
               <button class="status-button yellow">HOME</button>
               <button class="status-button blue">현재 좌표로 초기화</button>
-              <button class="status-button" id="install-btn" style="display: none;">Install</button>
+              <button
+                class="status-button"
+                id="install-btn"
+                style="display: none"
+              >
+                Install
+              </button>
             </div>
             <div class="current-status-info">
               <h3>Current Command/Robot Status:</h3>
@@ -185,7 +195,7 @@
               <button class="status-button stop-action red-main">종료</button>
             </div>
           </div>
-          
+
           <div class="panel glassmorphism developer-info-section">
             <h2>Developers</h2>
             <div class="developer-list">
@@ -196,18 +206,17 @@
               <p>황규빈</p>
             </div>
           </div>
-          </div>
+        </div>
       </div>
     </div>
     <script src="scripts.js"></script>
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          }, err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then(() => console.log("SW registered"))
+            .catch((err) => console.error("SW fail", err));
         });
       }
     </script>
