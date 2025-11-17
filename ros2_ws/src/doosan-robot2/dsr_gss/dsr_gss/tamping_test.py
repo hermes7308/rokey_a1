@@ -61,17 +61,24 @@ def perform_task():
     # # 경우에 따라 삭제 가능
     j0 = posj(0,0,90,0,90,0)
     movej(j0, vel=60, acc=30)
-    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    wait(1)
+    movel([0, 0, 200, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    wait(1)
 
     movej([-180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
 
     ## gripping 동작 추가
     print("movej 끝")
-    tool_pos = posx(-447.19, 9.11, 478.33, 0.0, 180.0, 0.0) # 잡을 위치
+    tool_pos = posx(-462.19, 9.11, 478.33, 0.0, 180.0, 0.0) # 잡을 위치
     tool_up = copy.deepcopy(tool_pos)
-    tool_up[2] += 50.0
+    tool_up[2] += 150.0
     print("tool_up 도착")
-    movel(tool_up, vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    pc0, _ = get_current_posx()
+    # movel(tool_up, vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    # 쪼개기
+    movel([tool_up[0], tool_up[1], pc0[2], pc0[3], pc0[4], pc0[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    movel([tool_up[0], tool_up[1], min(tool_up[2],pc0[2]), pc0[3], pc0[4], pc0[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
+
     # gripper 열기
     set_digital_output(1, OFF)
     set_digital_output(2, ON)
@@ -84,92 +91,98 @@ def perform_task():
     set_digital_output(1, ON)
     set_digital_output(2, OFF)
     wait(3)
-    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    movel([0, 0, 150, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
     movel([100, 0, 0, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
     # movel(tool_up, vel=60, acc=100)
     wait(1)
 
     movej([180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
+    ##
+    # # 나무 위치들
+    # treeLocations = [posx(356.24, 161.58, 340.0, 0.0, 180.0, 0.0),
+    #                  posx(656.24, 161.58, 340.0, 0.0, 180.0, 0.0),
+    #                  posx(656.24, 161.58-300.0, 340.0, 0.0, 180.0, 0.0)]
 
-    # 나무 위치들
-    treeLocations = [posx(356.24, 161.58, 340.0, 0.0, 180.0, 0.0),
-                     posx(656.24, 161.58, 340.0, 0.0, 180.0, 0.0),
-                     posx(656.24, 161.58-300.0, 340.0, 0.0, 180.0, 0.0)]
+    # r = 80.0
+    # loopN = 4
 
-    r = 80.0
-    loopN = 4
+    # dummy_index = 0
+    # for treeLocation in treeLocations:
+    #     if dummy_index == 0:
+    #         c = posx(treeLocation)
+    #         p0 = copy.deepcopy(c)
+    #         p0[1] -= r
+    #         movel(p0, vel=30, acc=100)
 
-    dummy_index = 0
-    for treeLocation in treeLocations:
-        if dummy_index == 0:
-            c = posx(treeLocation)
-            p0 = copy.deepcopy(c)
-            p0[1] -= r
-            movel(p0, vel=30, acc=100)
+    #         mp0 = copy.deepcopy(p0)
 
-            mp0 = copy.deepcopy(p0)
+    #         for i in range(loopN):
+    #             p0[2] -= 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[2] += 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
+    #             p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
+    #             mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
+    #             mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
+    #             movec(mp0,p0,vel=60,acc=100)
+    #     elif dummy_index == 1:
+    #         c = posx(treeLocation)
+    #         p0 = copy.deepcopy(c)
+    #         p0[1] += r
+    #         movel(p0, vel=30, acc=100)
 
-            for i in range(loopN):
-                p0[2] -= 10.0
-                movel(p0, vel=60, acc=100)
-                p0[2] += 10.0
-                movel(p0, vel=60, acc=100)
-                p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
-                p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
-                mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
-                mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
-                movec(mp0,p0,vel=60,acc=100)
-        elif dummy_index == 1:
-            c = posx(treeLocation)
-            p0 = copy.deepcopy(c)
-            p0[1] += r
-            movel(p0, vel=30, acc=100)
+    #         mp0 = copy.deepcopy(p0)
 
-            mp0 = copy.deepcopy(p0)
+    #         for i in range(loopN - 1):
+    #             p0[2] -= 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[2] += 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+    #             p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+    #             mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+    #             mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+    #             movec(mp0,p0,vel=60,acc=100)
+    #     else:
+    #         c = posx(treeLocation)
+    #         p0 = copy.deepcopy(c)
+    #         p0[1] += r
+    #         movel(p0, vel=30, acc=100)
 
-            for i in range(loopN - 1):
-                p0[2] -= 10.0
-                movel(p0, vel=60, acc=100)
-                p0[2] += 10.0
-                movel(p0, vel=60, acc=100)
-                p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
-                p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
-                mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
-                mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
-                movec(mp0,p0,vel=60,acc=100)
-        else:
-            c = posx(treeLocation)
-            p0 = copy.deepcopy(c)
-            p0[1] += r
-            movel(p0, vel=30, acc=100)
+    #         mp0 = copy.deepcopy(p0)
 
-            mp0 = copy.deepcopy(p0)
-
-            for i in range(loopN):
-                p0[2] -= 10.0
-                movel(p0, vel=60, acc=100)
-                p0[2] += 10.0
-                movel(p0, vel=60, acc=100)
-                p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
-                p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
-                mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
-                mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
-                movec(mp0,p0,vel=60,acc=100)
-
-        dummy_index += 1
+    #         for i in range(loopN):
+    #             p0[2] -= 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[2] += 10.0
+    #             movel(p0, vel=60, acc=100)
+    #             p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+    #             p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+    #             mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+    #             mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+    #             movec(mp0,p0,vel=60,acc=100)
+    
+    #     dummy_index += 1
 
     ## tool 복귀
     # 충돌 대비해서 목표 위치보다 수직으로 위인 지점으로 선형 이송 시키기
-    ptb1, _ = get_current_posx()
-    ptb1[2] += 100.0
-    movel(ptb1, vel=60, acc=100)
-    movej(j0, vel=60, acc=30)
-    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    # ptb1, _ = get_current_posx()
+    # ptb1[2] += 100.0
+    # movel(ptb1, vel=60, acc=100)
 
+    movej(j0, vel=60, acc=30)
+    wait(1)
+    movel([0, 0, 200, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+
+    ##
     movej([-180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
 
     # tool 꽂을 곳 위로 이동
-    movel(tool_up, vel=60, acc=100)
+    # movel(tool_up, vel=60, acc=100)
+    pc, _ = get_current_posx()
+    movel([tool_up[0], tool_up[1], pc[2], pc[3], pc[4], pc[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    movel([tool_up[0], tool_up[1], tool_up[2], pc[3], pc[4], pc[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
     # tool 꽂기
     # 일단 힘 제어 안  쓰고
     movel(tool_pos, vel=10, acc=100)
@@ -189,7 +202,7 @@ def perform_task():
     set_ref_coord(DR_BASE)
     # 충돌 대비해서 위로 올리기
     pc, _ = get_current_posx()
-    pc[2] += 200.0
+    pc[2] += 100.0
     movel(pc, vel=60, acc=100)
     # home으로 돌아오기
     movej(j0, vel=20, acc=30)
