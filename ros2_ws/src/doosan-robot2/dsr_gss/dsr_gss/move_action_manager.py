@@ -45,7 +45,6 @@ def perform_task():
         db.child("control_event/action/status").set("RUNNING")
 
         if action["actionType"].lower() == "movej":
-            print("MoveJ")
             pos = posj(
                 [
                     float(action["data"]["J1"]),
@@ -56,13 +55,13 @@ def perform_task():
                     float(action["data"]["J6"]),
                 ]
             )
+            info(f"{action['actionType']} - {str(pos)}")
             acc = float(action["data"]["Acceleration"])
             vel = float(action["data"]["Velocity"])
             movej(pos, vel, acc)
             db.child("control_event/action/status").set("DONE")
 
         if action["actionType"].lower() == "movel":
-            print("MoveL")
             pos = posx(
                 [
                     float(action["data"]["X"]),
@@ -73,6 +72,7 @@ def perform_task():
                     float(action["data"]["C"]),
                 ]
             )
+            info(f"{action['actionType']} - {str(pos)}")
             acc = float(action["data"]["Acceleration"])
             vel = float(action["data"]["Velocity"])
             movel(pos, vel, acc)
