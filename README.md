@@ -68,3 +68,13 @@ ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=virtual host:=127.0.
 ```
 ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=real host:=192.168.1.100 port:=12345 model:=m0609
 ```
+
+#### DSR_GSS 모니터링 시스템 실행
+##### virtual
+```
+ros2 launch dsr_gss monitoring_system.launch.py mode:=v
+```
+##### real
+```
+ros2 launch dsr_gss monitoring_system.launch.py mode:=ㄱ
+```
