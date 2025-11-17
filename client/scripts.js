@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
           status: "READY",
           timestamp: (timestamp = Date.now()),
         });
-        alert("새로운 작업이 등록되었습니다.");
+        console.log("새로운 작업이 등록되었습니다.");
       });
     return;
   };
