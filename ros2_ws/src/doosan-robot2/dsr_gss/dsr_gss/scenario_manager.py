@@ -10,7 +10,8 @@ from dsr_msgs2.srv import MoveJoint, MoveLine
 
 RUNNING = "RUNNING"
 STOPPED = "STOPPED"
-MAIN_NODE_NAME = "/turtlesim"
+PACKAGE_NAME = "dsr_rokey2"
+MAIN_NODE_NAME = "move_basic"
 
 
 class NodeController:
@@ -20,7 +21,7 @@ class NodeController:
     def get_pid(node_name: str) -> int | None:
         try:
             result = subprocess.run(
-                ["pgrep", "-f", node_name],
+                ["pgrep", "-f", f"/{node_name}"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -38,10 +39,10 @@ class NodeController:
         return cls.get_pid(node_name) is not None
 
     @staticmethod
-    def start(node_name: str):
+    def start(package_name:str, node_name: str):
         try:
             subprocess.Popen(
-                ["ros2", "run", "turtlesim", "turtlesim_node"],
+                ["ros2", "run", package_name, node_name],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -113,7 +114,7 @@ class ScenarioManager(Node):
     def on_required_status_changed(self, new_status):
         """Firebase required_status 변경 감지 → 노드 실행/종료"""
         if new_status == RUNNING:
-            NodeController.start(MAIN_NODE_NAME)
+            NodeController.start(PACKAGE_NAME, MAIN_NODE_NAME)
             self.db_ref.child("current_status").set(RUNNING)
 
         elif new_status == STOPPED:
