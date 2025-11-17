@@ -77,6 +77,7 @@ def perform_task():
     # movel(tool_up, vel=60, acc=100, mod=DR_MV_MOD_ABS)
     # 쪼개기
     movel([tool_up[0], tool_up[1], pc0[2], pc0[3], pc0[4], pc0[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    pc0, _ = get_current_posx()
     movel([tool_up[0], tool_up[1], min(tool_up[2],pc0[2]), pc0[3], pc0[4], pc0[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
 
     # gripper 열기
@@ -182,6 +183,7 @@ def perform_task():
     # movel(tool_up, vel=60, acc=100)
     pc, _ = get_current_posx()
     movel([tool_up[0], tool_up[1], pc[2], pc[3], pc[4], pc[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
+    pc, _ = get_current_posx()
     movel([tool_up[0], tool_up[1], tool_up[2], pc[3], pc[4], pc[5]], vel=60, acc=100, mod=DR_MV_MOD_ABS)
     # tool 꽂기
     # 일단 힘 제어 안  쓰고
