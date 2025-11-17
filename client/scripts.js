@@ -297,5 +297,9 @@ document.addEventListener("DOMContentLoaded", () => {
       action.actionType
     } -  ${description}`;
   });
+  db.ref("dsr_gss/planted_cnt").on("value", (snapshot) => {
+    const cnt = snapshot.val();
+    document.querySelector("#planted-count").innerText = cnt;
+  });
   // ------------------------- 외부 연결 부분 종료 --------------------------
 });
