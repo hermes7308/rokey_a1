@@ -158,7 +158,7 @@ def main(args=None):
     node = ScenarioManager()
 
     try:
-        info("ScenarioManager 를 실행합니다.")
+        info("ScenarioManager 시작합니다.")
         # 3. spin() 함수로 노드 실행 및 유지
         # 이 함수는 메시지가 오기를 기다리며 콜백을 처리합니다.
         # Ctrl+C (SIGINT)를 받으면 자동으로 블록이 풀리고 다음 코드로 넘어갑니다.
