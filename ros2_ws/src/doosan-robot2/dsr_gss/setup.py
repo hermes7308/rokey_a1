@@ -29,6 +29,7 @@ setup(
             "coordinate_uploader = dsr_gss.coordinate_uploader:main",
             "scenario_manager = dsr_gss.scenario_manager:main",
             "move_action_manager = dsr_gss.move_action_manager:main",
+            "tree_pick_place = dsr_gss.tree_pick_place:main",
         ],
     },
 )
