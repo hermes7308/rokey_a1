@@ -67,11 +67,11 @@ class NodeController:
             print(f"[ERROR] 노드 종료 실패: {e}")
 
 
-class ControlEventManager(Node):
+class ScenarioManager(Node):
     """Firebase 실시간 이벤트 감시 및 노드 제어 클래스"""
 
     def __init__(self):
-        super().__init__("control_event_manager")
+        super().__init__("scenario_manager")
         self.db_ref = get_firebase_db_reference().child("control_event")
         self.status = {
             "current_status": STOPPED,
@@ -120,70 +120,6 @@ class ControlEventManager(Node):
             NodeController.stop(MAIN_NODE_NAME)
             self.db_ref.child("current_status").set(STOPPED)
 
-    def on_move_action(self, action):
-        if action["status"] == "DONE":
-            return
-
-        if action["actionType"] == "movej":
-            while not self.movej_cli.wait_for_service(timeout_sec=1.0):
-                self.get_logger().info("서비스 대기 중: dsr01/motion/move_joint")
-
-            self.movej_req.pos = [
-                float(action["data"]["J1"]),
-                float(action["data"]["J2"]),
-                float(action["data"]["J3"]),
-                float(action["data"]["J4"]),
-                float(action["data"]["J5"]),
-                float(action["data"]["J6"]),
-            ]
-            self.movej_req.acc = float(action["data"]["Acceleration"])
-            self.movej_req.vel = float(action["data"]["Velocity"])
-
-            movej_future = self.movej_cli.call_async(self.movej_req)
-            print("서비스 호출 중: dsr01/motion/move_joint")
-            movej_future.add_done_callback(self.movej_response_callback)
-            return
-
-        if action["actionType"] == "movel":
-            while not self.movel_cli.wait_for_service(timeout_sec=1.0):
-                self.get_logger().info("서비스 대기 중: dsr01/motion/move_line")
-
-            self.movej_req.pos = [
-                float(action["data"]["X"]),
-                float(action["data"]["Y"]),
-                float(action["data"]["Z"]),
-                float(action["data"]["A"]),
-                float(action["data"]["B"]),
-                float(action["data"]["C"]),
-            ]
-            self.movej_req.acc = float(action["data"]["Acceleration"])
-            self.movej_req.vel = float(action["data"]["Velocity"])
-
-            movej_future = self.movel_cli.call_async(self.movel_req)
-            print("서비스 호출 중: dsr01/motion/move_line")
-            movej_future.add_done_callback(self.movel_response_callback)
-            return
-
-    def movej_response_callback(self, future):
-        try:
-            response = future.result()
-            if response.success:
-                self.get_logger().info("movej 이동 완료")
-        except Exception as e:
-            self.get_logger().error(f"서비스 호출 중 오류 발생(콜백): {e}")
-        finally:
-            self.db_ref.child("action/status").set("DONE")
-
-    def movel_response_callback(self, future):
-        try:
-            response = future.result()
-            if response.success:
-                self.get_logger().info("movel 이동 완료")
-        except Exception as e:
-            self.get_logger().error(f"서비스 호출 중 오류 발생(콜백): {e}")
-        finally:
-            self.db_ref.child("action/status").set("DONE")
-
     def listener(self, event):
         print(f"\nEvent Type: {event.event_type}")
         print(f"Path: {event.path}")
@@ -199,11 +135,6 @@ class ControlEventManager(Node):
 
         if event.path == "/required_status":
             self.on_required_status_changed(event.data)
-            return
-
-        if event.path == "/action":
-            print(event.data)
-            self.on_move_action(event.data)
             return
 
     def start_listener(self):
@@ -223,11 +154,11 @@ def main(args=None):
     # 1. rclpy 초기화
     rclpy.init(args=args)
 
-    # 2. ControlEventListener 노드 생성
-    node = ControlEventManager()
+    # 2. ScenarioManager 노드 생성
+    node = ScenarioManager()
 
     try:
-        info("ControlEventManager 를 실행합니다.")
+        info("ScenarioManager 를 실행합니다.")
         # 3. spin() 함수로 노드 실행 및 유지
         # 이 함수는 메시지가 오기를 기다리며 콜백을 처리합니다.
         # Ctrl+C (SIGINT)를 받으면 자동으로 블록이 풀리고 다음 코드로 넘어갑니다.

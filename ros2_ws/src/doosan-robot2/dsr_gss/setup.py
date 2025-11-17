@@ -26,8 +26,9 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "control_event_manager = dsr_gss.control_event_manager:main",
             "coordinate_uploader = dsr_gss.coordinate_uploader:main",
+            "scenario_manager = dsr_gss.scenario_manager:main",
+            "move_action_manager = dsr_gss.move_action_manager:main",
         ],
     },
 )

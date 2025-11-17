@@ -78,3 +78,7 @@ ros2 launch dsr_gss monitoring_system.launch.py mode:=v
 ```
 ros2 launch dsr_gss monitoring_system.launch.py mode:=r
 ```
+##### 공통
+```
+ros2 run dsr_gss move_action_manager 
+```

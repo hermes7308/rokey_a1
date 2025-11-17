@@ -77,13 +77,18 @@ def generate_launch_description():
             setup_action,
             Node(
                 package="dsr_gss",
-                executable="control_event_manager",
-                name="control_event_manager",
-            ),
-            Node(
-                package="dsr_gss",
                 executable="coordinate_uploader",
                 name="coordinate_uploader",
             ),
+            Node(
+                package="dsr_gss",
+                executable="scenario_manager",
+                name="scenario_manager",
+            ),
+            # Node(
+            #     package="dsr_gss",
+            #     executable="move_action_manager",
+            #     name="move_action_manager",
+            # ),
         ]
     )
