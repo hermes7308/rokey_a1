@@ -54,19 +54,20 @@ def perform_task():
         movel,
         posj, get_current_posx, movec, posx, set_digital_output, wait, ON, OFF,
         set_ref_coord, task_compliance_ctrl, set_desired_force, DR_FC_MOD_REL, DR_MV_MOD_ABS,
-        check_force_condition, DR_AXIS_Z, DR_BASE
+        check_force_condition, DR_AXIS_Z, DR_BASE, DR_MV_MOD_REL
     )
 
     # # home 위치로 돌아가는 작업
     # # 경우에 따라 삭제 가능
     j0 = posj(0,0,90,0,90,0)
     movej(j0, vel=60, acc=30)
+    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
 
     movej([-180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
 
     ## gripping 동작 추가
     print("movej 끝")
-    tool_pos = posx(-452.39, 41.97, 295.0, 0.0, 180.0, 0.0) # 잡을 위치
+    tool_pos = posx(-447.19, 9.11, 478.33, 0.0, 180.0, 0.0) # 잡을 위치
     tool_up = copy.deepcopy(tool_pos)
     tool_up[2] += 50.0
     print("tool_up 도착")
@@ -83,23 +84,24 @@ def perform_task():
     set_digital_output(1, ON)
     set_digital_output(2, OFF)
     wait(3)
-    movel([0, 0, 200, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
+    movel([100, 0, 0, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
     # movel(tool_up, vel=60, acc=100)
     wait(1)
 
     movej([180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
 
-    # 나무 ghghghefm,n,.
-    treeLocations = [posx(356.24, 161.58, 345.0, 0.0, 180.0, 0.0),
-                     posx(656.24, 161.58, 345.0, 0.0, 180.0, 0.0),
-                     posx(656.24, 161.58-300.0, 345.0, 0.0, 180.0, 0.0)]
+    # 나무 위치들
+    treeLocations = [posx(356.24, 161.58, 340.0, 0.0, 180.0, 0.0),
+                     posx(656.24, 161.58, 340.0, 0.0, 180.0, 0.0),
+                     posx(656.24, 161.58-300.0, 340.0, 0.0, 180.0, 0.0)]
 
-    r = 60.0
+    r = 80.0
     loopN = 4
 
     dummy_index = 0
     for treeLocation in treeLocations:
-        if dummy_index != 2:
+        if dummy_index == 0:
             c = posx(treeLocation)
             p0 = copy.deepcopy(c)
             p0[1] -= r
@@ -116,6 +118,24 @@ def perform_task():
                 p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (3.0/2.0)*pi)
                 mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
                 mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (3.0/2.0)*pi)
+                movec(mp0,p0,vel=60,acc=100)
+        elif dummy_index == 1:
+            c = posx(treeLocation)
+            p0 = copy.deepcopy(c)
+            p0[1] += r
+            movel(p0, vel=30, acc=100)
+
+            mp0 = copy.deepcopy(p0)
+
+            for i in range(loopN - 1):
+                p0[2] -= 10.0
+                movel(p0, vel=60, acc=100)
+                p0[2] += 10.0
+                movel(p0, vel=60, acc=100)
+                p0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+                p0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+1.0) + (1.0/2.0)*pi)
+                mp0[0] = c[0] + r * cos((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
+                mp0[1] = c[1] + r * sin((2.0*pi/loopN) * (i+0.5) + (1.0/2.0)*pi)
                 movec(mp0,p0,vel=60,acc=100)
         else:
             c = posx(treeLocation)
@@ -144,6 +164,7 @@ def perform_task():
     ptb1[2] += 100.0
     movel(ptb1, vel=60, acc=100)
     movej(j0, vel=60, acc=30)
+    movel([0, 0, 100, 0, 0, 0], vel=60, acc=100, mod=DR_FC_MOD_REL)
 
     movej([-180, 0, 0, 0, 0, 0], mod=DR_FC_MOD_REL, vel=60, acc=20)
 
@@ -168,7 +189,7 @@ def perform_task():
     set_ref_coord(DR_BASE)
     # 충돌 대비해서 위로 올리기
     pc, _ = get_current_posx()
-    pc[2] += 100.0
+    pc[2] += 200.0
     movel(pc, vel=60, acc=100)
     # home으로 돌아오기
     movej(j0, vel=20, acc=30)
