@@ -76,5 +76,5 @@ ros2 launch dsr_gss monitoring_system.launch.py mode:=v
 ```
 ##### real
 ```
-ros2 launch dsr_gss monitoring_system.launch.py mode:=ㄱ
+ros2 launch dsr_gss monitoring_system.launch.py mode:=r
 ```
