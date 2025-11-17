@@ -30,7 +30,9 @@ setup(
             'tampingCopy = dsr_gss.tampingCopy:main',
             'tamping_with_gripping = dsr_gss.tamping_with_gripping:main',
             'tamping_single_node = dsr_gss.tamping_single_node:main',
-            'tamping_repeatable = dsr_gss.tamping_repeatable:main'
+            'tamping_repeatable = dsr_gss.tamping_repeatable:main',
+            'tamping_test = dsr_gss.tamping_test:main',
+            'mvjx = dsr_gss.mvjx:main'
         ],
     },
 )
