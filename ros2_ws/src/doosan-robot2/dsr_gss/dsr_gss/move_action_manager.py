@@ -34,7 +34,6 @@ def perform_task():
     from DSR_ROBOT2 import posx, posj, movej, movel
 
     db = get_firebase_db_reference()
-    print("로봇 작업을 시작합니다.")
     info("MoveActionManager 시작합니다.")
     while True:
         action = db.child("control_event/action").get()
