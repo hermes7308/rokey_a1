@@ -10,8 +10,8 @@ from dsr_msgs2.srv import MoveJoint, MoveLine
 
 RUNNING = "RUNNING"
 STOPPED = "STOPPED"
-PACKAGE_NAME = "dsr_rokey2"
-MAIN_NODE_NAME = "move_basic"
+PACKAGE_NAME = "dsr_gss"
+MAIN_NODE_NAME = "scenario_player"
 
 
 class NodeController:

@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, db
 
@@ -37,9 +38,16 @@ def get_firebase_db_reference():
 
 
 def _add_log(level, message):
+    millis_timestamp = int(time.time() * 1000)
+    seconds_timestamp = millis_timestamp / 1000
+    dt_object = datetime.fromtimestamp(seconds_timestamp)
+    formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+
+    print(f"[{formatted_time}][{level.upper()}] {message}")
+
     get_firebase_db_reference().child("logs").push(
         {
-            "timestamp": int(time.time() * 1000),
+            "timestamp": int(millis_timestamp),
             "level": level.upper(),
             "message": message,
         }
@@ -60,3 +68,8 @@ def warning(message):
 
 def error(message):
     _add_log("INFO", message)
+
+
+def increase_planted_count():
+    planted_count = get_firebase_db_reference().child("planted_cnt").get()
+    get_firebase_db_reference().child("planted_cnt").set(planted_count + 1)

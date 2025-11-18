@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       (key) =>
         (textContext += `[${formatTimestamp(logs[key].timestamp)}][${
           logs[key].level
-        }] - ${logs[key].message}\n`)
+        }] ${logs[key].message}\n`)
     );
     document.getElementById("robot-log").innerText = textContext;
   });
