@@ -193,7 +193,7 @@ def perform_task():
 
             # 9) 삽 털기 위한 회전
             movej([-90, 0, 0, 0, 0, 0],
-                v=VELOCITY, a=ACC,
+                v=20, a=ACC,
                 mod=DR_MV_MOD_REL)
 
             movej([0, 0, 0, 0, -90, 0],
