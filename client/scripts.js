@@ -170,6 +170,16 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("종료");
         activateActionButtons();
         db.ref("dsr_gss/control_event/required_status").set("STOPPED");
+        db.ref("dsr_gss/control_event/action/status")
+          .get()
+          .then((snapshot) => {
+            const status = snapshot.val();
+            if (status == null) {
+              return;
+            }
+
+            db.ref("dsr_gss/control_event/action/status").set("DONE");
+          });
         return;
       }
     });
@@ -182,6 +192,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .set("")
       .then(() => console.log("로그 초기화"));
   });
+
+  document
+    .querySelector("#refresh-planted-count")
+    .addEventListener("click", (e) => {
+      e.preventDefault();
+      db.ref("dsr_gss/planted_cnt").set(0);
+    });
 
   // ------------------------- UI event 부분 종료 --------------------------
 

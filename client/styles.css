@@ -454,6 +454,58 @@ input[type="number"]:focus {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
+/* --- Icon Button Style (Planted Count 옆의 새로고침 버튼) --- */
+
+.icon-button {
+  /* 아이콘 버튼의 기본 스타일 */
+  background: none;
+  border: none;
+  /* 수정된 부분: 기본 아이콘 색상을 흰색으로 변경 */
+  color: #ffffff; 
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px; /* 텍스트와의 간격 */
+  font-size: 1.1em;
+  transition: color 0.2s, transform 0.1s, opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px; /* 클릭 영역 확보 */
+  width: 20px; /* 클릭 영역 확보 */
+  opacity: 0.8; /* 기본 투명도 */
+}
+
+.icon-button:hover {
+  /* 호버 시 강조색(파란색)으로 변경하여 사용자 피드백 제공 */
+  color: #00aaff;
+  opacity: 1;
+  transform: scale(1.1); /* 약간 확대 */
+}
+
+.icon-button:active {
+  /* 클릭 시 기본색으로 돌아오며 살짝 축소 */
+  color: #ffffff;
+  transform: scale(0.95);
+}
+
+/* Planted Count 섹션에 적용하기 위한 컨테이너 조정 */
+.current-status-info h3 {
+  /* 기존 스타일 유지하면서 flexbox 추가 */
+  display: flex;
+  align-items: center;
+  justify-content: start; /* 버튼을 오른쪽으로 밀 수도 있음 */
+  /* 또는 버튼이 바로 옆에 있도록: */
+  /* justify-content: flex-start; */
+}
+
+/* Planted Count의 h3 내에 있는 버튼만 대상으로 지정 */
+.current-status-info h3 .icon-button {
+  margin-left: 10px;
+  /* 버튼이 텍스트 바로 옆에 붙도록 하려면 이 속성을 제거 */
+  order: 2; /* 버튼을 제목의 오른쪽 끝으로 보내고 싶다면 사용 */
+  flex-shrink: 0; /* 크기 유지 */
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .main-content {
