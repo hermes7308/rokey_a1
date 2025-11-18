@@ -24,6 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'dig_test = dsr_gss.dig_test:main',
+            'test = dsr_gss.test:main'
         ],
     },
 )
