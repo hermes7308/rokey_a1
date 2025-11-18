@@ -1,29 +1,35 @@
+import os
+from glob import glob
 from setuptools import find_packages, setup
 
-package_name = 'dsr_gss'
+package_name = "dsr_gss"
 
 setup(
     name=package_name,
-    version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    version="0.0.0",
+    packages=find_packages(exclude=["test"]),
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
+        ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
+        ("share/" + package_name, ["package.xml"]),
+        (os.path.join("share", package_name, "launch"), glob("launch/*")),
     ],
-    install_requires=['setuptools'],
+    install_requires=["setuptools"],
     zip_safe=True,
-    maintainer='steve',
-    maintainer_email='hermes7308@gmail.com',
-    description='TODO: Package description',
-    license='Apache-2.0',
+    maintainer="steve",
+    maintainer_email="hermes7308@gmail.com",
+    description="TODO: Package description",
+    license="Apache-2.0",
     extras_require={
-        'test': [
-            'pytest',
+        "test": [
+            "pytest",
         ],
     },
     entry_points={
-        'console_scripts': [
+        "console_scripts": [
+            "coordinate_uploader = dsr_gss.coordinate_uploader:main",
+            "scenario_manager = dsr_gss.scenario_manager:main",
+            "move_action_manager = dsr_gss.move_action_manager:main",
+            "scenario_player = dsr_gss.scenario_player:main",
             'dig_test = dsr_gss.dig_test:main',
             'test = dsr_gss.test:main'
         ],

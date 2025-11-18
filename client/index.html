@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ROKEY</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="header">Doosan M0609 Robot Interface</h1>
+
+      <div class="main-content">
+        <div class="control-panels">
+          <div class="control-and-log-section">
+            <div class="panel glassmorphism joint-control">
+              <h2>Joint Control (MoveJ)</h2>
+              <div class="input-group">
+                <div class="joint-inputs">
+                  <label data-label="J1">J1 (deg):</label>
+                  <input type="number" value="0.0" step="0.001" />
+
+                  <label data-label="J2">J2 (deg):</label>
+                  <input type="number" value="0.0" step="0.001" />
+
+                  <label data-label="J3">J3 (deg):</label>
+                  <input type="number" value="90.0" step="0.001" />
+
+                  <label data-label="J4">J4 (deg):</label>
+                  <input type="number" value="0.0" step="0.001" />
+
+                  <label data-label="J5">J5 (deg):</label>
+                  <input type="number" value="90.0" step="0.001" />
+
+                  <label data-label="J6">J6 (deg):</label>
+                  <input type="number" value="0.0" step="0.001" />
+                </div>
+
+                <div class="speed-acc">
+                  <label>Speed / Acc: (0 – 100)</label>
+                  <div class="speed-input">
+                    <label>Velocity:</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="60"
+                      class="slider"
+                      id="velocityJ"
+                    />
+                    <span id="velocityJValue">60</span>
+                  </div>
+                  <div class="speed-input">
+                    <label>Acceleration:</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="60"
+                      class="slider"
+                      id="accelerationJ"
+                    />
+                    <span id="accelerationJValue">60</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-buttons">
+                <button class="control-button move-button primary">
+                  MOVE(J)
+                </button>
+                <button class="control-button copy-button secondary">
+                  COPY
+                </button>
+              </div>
+            </div>
+
+            <div class="panel glassmorphism cartesian-control">
+              <h2>Cartesian Control (MoveL)</h2>
+              <div class="input-group">
+                <div class="cartesian-inputs">
+                  <label data-label="X">X (mm):</label>
+                  <input type="number" value="368.0" step="0.001" />
+
+                  <label data-label="Y">Y (mm):</label>
+                  <input type="number" value="6.25" step="0.001" />
+
+                  <label data-label="Z">Z (mm):</label>
+                  <input type="number" value="425.0" step="0.001" />
+
+                  <label data-label="A">A (deg):</label>
+                  <input type="number" value="45.0" step="0.001" />
+
+                  <label data-label="B">B (deg):</label>
+                  <input type="number" value="180.0" step="0.001" />
+
+                  <label data-label="C">C (deg):</label>
+                  <input type="number" value="45.0" step="0.001" />
+                </div>
+
+                <div class="speed-acc">
+                  <label>Speed / Acc: (0 – 100)</label>
+                  <div class="speed-input">
+                    <label>Velocity:</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="60"
+                      class="slider"
+                      id="velocityL"
+                    />
+                    <span id="velocityLValue">60</span>
+                  </div>
+                  <div class="speed-input">
+                    <label>Acceleration:</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value="60"
+                      class="slider"
+                      id="accelerationL"
+                    />
+                    <span id="accelerationLValue">60</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel-buttons">
+                <button class="control-button move-button primary">
+                  MOVE(L)
+                </button>
+                <button class="control-button copy-button secondary">
+                  COPY
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel glassmorphism log-panel-section full-width-log">
+            <h2>Real-time Robot Script Log</h2>
+            <pre id="robot-log"></pre>
+            <button id="clear-log-btn" class="control-button secondary">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="status-panel">
+          <div class="panel glassmorphism status-info-section flex-grow-status">
+            <h2>Status & Tools</h2>
+
+            <div class="status-buttons">
+              <!-- <button class="status-button green">TCP 확인</button>
+              <button class="status-button gray">Tool 확인</button> -->
+              <button class="status-button yellow">HOME</button>
+              <button class="status-button blue">현재 좌표로 초기화</button>
+              <button
+                class="status-button"
+                id="install-pwa-btn"
+                style="display: none"
+              >
+                App 설치
+              </button>
+            </div>
+            <div class="current-status-info">
+              <h3>Current TCP Setting:</h3>
+              <p class="tool-value">GripperDA_mh</p>
+
+              <h3>Current Tool Setting:</h3>
+              <p class="tool-value">Toolweight</p>
+
+              <h3>Current Command/Robot Status:</h3>
+              <p id="current-robot-status">stopped</p>
+
+              <h3>Move Command</h3>
+              <p id="waiting-move-action">None</p>
+
+              <h3>
+                Planted Count
+                <button class="icon-button" id="refresh-planted-count">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+              </h3>
+              <p id="planted-count">0</p>
+            </div>
+
+            <div class="status-buttons">
+              <button class="status-button primary-action blue-main">
+                시작
+              </button>
+              <button class="status-button stop-action red-main">종료</button>
+            </div>
+          </div>
+
+          <!-- <div class="panel glassmorphism developer-info-section">
+            <h2>Developers</h2>
+            <div class="developer-list">
+              <p>강종아</p>
+              <p>김재우</p>
+              <p>박현근</p>
+              <p>오준식</p>
+              <p>황규빈</p>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script
+      src="https://kit.fontawesome.com/89334fa18c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>

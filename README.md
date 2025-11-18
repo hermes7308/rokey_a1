@@ -4,10 +4,16 @@
 
 ## Backend(server)
 ```
-pip3 install firebase-admin
+pip3 install firebase-admin Flask flask-cors
 ```
 
 ## ROS2(ros2_ws)
+
+### Python Dependencies
+
+```
+pip3 install firebase-admin
+```
 
 ### Workspace path 설정
 1. git clone 을 받아서 ~/workspace/rokey_a1 에 저장
@@ -52,3 +58,27 @@ show_ros_info
 
 ```
 
+
+### 로봇 실행
+#### virtual
+```
+ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=virtual host:=127.0.0.1 port:=12345 model:=m0609
+```
+#### real
+```
+ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=real host:=192.168.1.100 port:=12345 model:=m0609
+```
+
+#### DSR_GSS 모니터링 시스템 실행
+##### virtual
+```
+ros2 launch dsr_gss monitoring_system.launch.py mode:=v
+```
+##### real
+```
+ros2 launch dsr_gss monitoring_system.launch.py mode:=r
+```
+##### 공통
+```
+ros2 run dsr_gss move_action_manager 
+```

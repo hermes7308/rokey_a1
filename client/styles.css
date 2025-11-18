@@ -1,0 +1,573 @@
+/* 기본 리셋 및 폰트 설정 */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #e0e0e0; /* 전반적인 텍스트 색상을 밝게 변경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: auto; /* Allow scrolling for content */
+
+  /* --- 배경 이미지 설정 --- */
+  background-image: url("img/gss_robot_img.jpg"); /* 이미지 경로 */
+  background-size: cover; /* 화면을 꽉 채우도록 */
+  background-position: center; /* 이미지를 중앙에 배치 */
+  background-repeat: no-repeat; /* 반복 방지 */
+  background-attachment: fixed; /* 스크롤 시 배경 고정 */
+
+  /* 배경 이미지 위에 오버레이를 추가하여 텍스트 대비 향상 및 고급스러움 증대 */
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* 어두운 오버레이 */
+  backdrop-filter: brightness(0.6) blur(3px); /* 배경 이미지 자체에 살짝 블러와 어둡게 처리 */
+  z-index: -1;
+}
+
+.container {
+  max-width: 1500px;
+  width: 95%;
+  margin: 30px auto;
+  /* 기존 배경 효과 제거, 배경 이미지가 보이도록 */
+  background: transparent;
+  backdrop-filter: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* 그림자 진하게 */
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* 컨테이너 테두리 살짝 보이게 */
+}
+
+/* Header */
+.header {
+  text-align: center;
+  color: #ffffff; /* 헤더 텍스트를 흰색으로 */
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 추가 */
+}
+
+/* Main Layout (기존과 동일) */
+.main-content {
+  display: flex;
+  gap: 25px;
+}
+
+.control-panels {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.control-and-log-section {
+  display: flex;
+  gap: 25px;
+}
+
+.status-panel {
+  flex: 1;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Glassmorphism Panel Style */
+.panel {
+  /* 배경 투명도를 더 낮추고 블러 효과 강화 */
+  background: rgba(255, 255, 255, 0.15); /* 투명도 15% */
+  backdrop-filter: blur(20px); /* 블러 강도 증가 */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* 테두리 투명도 조절 */
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 그림자 조절 */
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* z-index를 위해 */
+  z-index: 1; /* 오버레이 위로 올라오도록 */
+}
+
+.joint-control,
+.cartesian-control {
+  flex: 1;
+}
+
+.status-info-section.flex-grow-status {
+  flex-grow: 1;
+  min-height: auto;
+}
+
+.log-panel-section {
+  flex: 0 0 auto;
+}
+
+.panel h2 {
+  margin-top: 0;
+  color: #ffffff; /* 제목 색상 흰색 */
+  font-size: 1.4em;
+  font-weight: 500;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* 테두리 투명도 조절 */
+  margin-bottom: 20px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* --- 개발자 정보 패널 스타일 개선 --- */
+.developer-info-section {
+  flex-grow: 0; /* status-info-section이 남은 공간을 채우고 이 패널은 내용만큼만 크기를 가집니다. */
+}
+
+.developer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 개발자 이름 간 간격 증가 */
+  padding: 5px 0;
+}
+
+.developer-list p {
+  font-size: 1em; /* 글자 크기 약간 키움 */
+  font-weight: 500; /* 폰트 두께 증가 */
+  color: #ffffff; /* 텍스트 색상을 더 밝게 */
+  padding: 10px 15px; /* 패딩 증가 */
+  border-radius: 8px; /* 둥근 모서리 증가 */
+  background: rgba(255, 255, 255, 0.1); /* 배경 투명도 약간 증가 */
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+
+  /* 미려한 그림자 추가 */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  /* 아이콘 추가를 위한 flex */
+  display: flex;
+  align-items: center;
+}
+
+/* 가상의 아이콘 (점 또는 이모지) 추가 */
+.developer-list p::before {
+  content: "👨‍💻"; /* 개발자 이모지 */
+  margin-right: 12px;
+  font-size: 1.1em;
+  opacity: 0.8;
+}
+
+.developer-list p:hover {
+  background: rgba(0, 170, 255, 0.2); /* 호버 시 아쿠아 색상 배경 */
+  transform: translateX(5px); /* 호버 시 오른쪽으로 살짝 이동 */
+  box-shadow: 0 4px 10px rgba(0, 170, 255, 0.3); /* 호버 시 그림자 색상 변경 */
+}
+
+/* ------------------------------------ */
+
+/* 로그 패널 */
+#robot-log {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+  padding: 15px;
+  border-radius: 8px;
+  height: 300px;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+    monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+  flex-grow: 1;
+  min-height: 250px;
+}
+
+/* 입력 필드 및 슬라이더 (이하 기존 스타일 유지 및 업데이트) */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.joint-inputs,
+.cartesian-inputs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 15px;
+  align-items: center;
+}
+
+label {
+  font-weight: 500;
+  color: #f0f0f0;
+  font-size: 0.95em;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+input[type="number"] {
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1em;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.3);
+}
+
+.speed-acc {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.speed-acc > label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 1em;
+  color: #ffffff;
+}
+
+.speed-input {
+  display: grid;
+  grid-template-columns: 100px 1fr 40px;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.speed-input label {
+  margin-right: 0;
+  color: #f0f0f0;
+}
+
+.speed-input .slider {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  outline: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  border-radius: 2px;
+}
+
+.speed-input .slider:hover {
+  opacity: 1;
+}
+
+.speed-input .slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00aaff;
+  cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+}
+
+.speed-input .slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00aaff;
+  cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+}
+
+.speed-input span {
+  width: 40px;
+  text-align: right;
+  font-weight: 500;
+  color: #00aaff;
+  font-size: 0.9em;
+}
+
+.panel-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.control-button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.2px;
+}
+
+.control-button.primary {
+  background-color: #00aaff;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 170, 255, 0.4);
+}
+
+.control-button.secondary {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
+}
+
+.control-button.primary:hover {
+  background-color: #0099e6;
+  box-shadow: 0 3px 12px rgba(0, 170, 255, 0.5);
+}
+
+.control-button.secondary:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* Status Panel Styles */
+.status-info-section {
+  padding: 20px;
+}
+
+.status-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.status-button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  font-size: 0.95em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 버튼 색상 조정 - 어두운 배경에 더 잘 보이도록 */
+.status-button.blue-main {
+  background-color: #00aaff;
+}
+.status-button.red-main {
+  background-color: #ff4d4d;
+}
+.status-button.green {
+  background-color: #4cd964;
+}
+.status-button.gray {
+  background-color: #c7c7cc;
+  color: #333;
+}
+.status-button.yellow {
+  background-color: #ffcc00;
+  color: #333;
+}
+.status-button.blue {
+  background-color: #5ac8fa;
+}
+#install-pwa-btn {
+  background-color: #8a2be2; /* A nice purple */
+  color: white;
+  grid-column: span 2; /* Make it wider */
+  text-align: center;
+}
+
+.status-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.status-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+}
+
+.current-status-info {
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.current-status-info h3 {
+  font-size: 0.95em;
+  color: #e0e0e0;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.current-status-info p {
+  font-weight: 600;
+  color: #ffffff;
+  padding-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 12px;
+}
+
+.current-status-info p strong {
+  color: #ffffff;
+}
+
+.tool-value {
+  color: #00aaff !important;
+}
+
+/* Scrollbar styles (기존과 동일) */
+#robot-log::-webkit-scrollbar {
+  width: 8px;
+}
+
+#robot-log::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+#robot-log::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+#robot-log::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Icon Button Style (Planted Count 옆의 새로고침 버튼) --- */
+
+.icon-button {
+  /* 아이콘 버튼의 기본 스타일 */
+  background: none;
+  border: none;
+  /* 수정된 부분: 기본 아이콘 색상을 흰색으로 변경 */
+  color: #ffffff; 
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px; /* 텍스트와의 간격 */
+  font-size: 1.1em;
+  transition: color 0.2s, transform 0.1s, opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px; /* 클릭 영역 확보 */
+  width: 20px; /* 클릭 영역 확보 */
+  opacity: 0.8; /* 기본 투명도 */
+}
+
+.icon-button:hover {
+  /* 호버 시 강조색(파란색)으로 변경하여 사용자 피드백 제공 */
+  color: #00aaff;
+  opacity: 1;
+  transform: scale(1.1); /* 약간 확대 */
+}
+
+.icon-button:active {
+  /* 클릭 시 기본색으로 돌아오며 살짝 축소 */
+  color: #ffffff;
+  transform: scale(0.95);
+}
+
+/* Planted Count 섹션에 적용하기 위한 컨테이너 조정 */
+.current-status-info h3 {
+  /* 기존 스타일 유지하면서 flexbox 추가 */
+  display: flex;
+  align-items: center;
+  justify-content: start; /* 버튼을 오른쪽으로 밀 수도 있음 */
+  /* 또는 버튼이 바로 옆에 있도록: */
+  /* justify-content: flex-start; */
+}
+
+/* Planted Count의 h3 내에 있는 버튼만 대상으로 지정 */
+.current-status-info h3 .icon-button {
+  margin-left: 10px;
+  /* 버튼이 텍스트 바로 옆에 붙도록 하려면 이 속성을 제거 */
+  order: 2; /* 버튼을 제목의 오른쪽 끝으로 보내고 싶다면 사용 */
+  flex-shrink: 0; /* 크기 유지 */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .control-panels {
+    flex: auto;
+  }
+
+  .control-and-log-section {
+    flex-direction: column;
+  }
+
+  .joint-control,
+  .cartesian-control {
+    flex: auto;
+  }
+
+  .status-panel {
+    min-width: unset;
+    width: 100%;
+    flex: auto;
+  }
+
+  .status-info-section.flex-grow-status {
+    min-height: unset;
+  }
+
+  #robot-log {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    margin: 15px auto;
+  }
+  .header {
+    font-size: 1.8em;
+  }
+  .panel h2 {
+    font-size: 1.2em;
+  }
+  .status-buttons {
+    grid-template-columns: 1fr;
+  }
+  .panel-buttons {
+    flex-direction: column;
+  }
+  .control-button {
+    width: 100%;
+  }
+  .joint-inputs,
+  .cartesian-inputs {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .joint-inputs label,
+  .cartesian-inputs label {
+    display: block;
+    margin-bottom: -5px;
+  }
+}
