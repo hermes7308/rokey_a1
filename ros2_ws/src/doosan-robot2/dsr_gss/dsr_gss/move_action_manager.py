@@ -37,6 +37,10 @@ def perform_task():
     info("MoveActionManager 시작합니다.")
     while True:
         action = db.child("control_event/action").get()
+        if action is None:
+            time.sleep(SLEEP_TIME)
+            continue
+
         if action["status"].lower() != "ready":
             time.sleep(SLEEP_TIME)
             continue
@@ -59,6 +63,7 @@ def perform_task():
             vel = float(action["data"]["Velocity"])
             movej(pos, vel, acc)
             db.child("control_event/action/status").set("DONE")
+            continue
 
         if action["actionType"].lower() == "movel":
             pos = posx(
@@ -76,6 +81,7 @@ def perform_task():
             vel = float(action["data"]["Velocity"])
             movel(pos, vel, acc)
             db.child("control_event/action/status").set("DONE")
+            continue
 
         time.sleep(SLEEP_TIME)  # 동작 사이에 약간의 대기 시간 추가
 

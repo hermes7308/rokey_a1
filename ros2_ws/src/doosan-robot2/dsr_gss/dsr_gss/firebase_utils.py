@@ -73,3 +73,9 @@ def error(message):
 def increase_planted_count():
     planted_count = get_firebase_db_reference().child("planted_cnt").get()
     get_firebase_db_reference().child("planted_cnt").set(planted_count + 1)
+
+
+def exit():
+    get_firebase_db_reference().child("control_event/required_status").set(
+        "STOPPED"
+    )
