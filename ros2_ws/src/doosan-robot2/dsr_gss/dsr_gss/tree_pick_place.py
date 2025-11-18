@@ -40,7 +40,7 @@ def perform_task():
         set_digital_output,
         set_tool_digital_output,
         wait,
-        DR_MV_MOD_REL
+        DR_MV_MOD_REL,
     )
 
     # ===== 시작 자세 =====
@@ -84,47 +84,87 @@ def perform_task():
     # ===== 한 점에 대한 pick & place =====
     def pick_and_place(px, py, pz, tx, ty, tz):
 
-        pick_up = posx(px, py, pz + safe_dz, rx, ry, rz)
-        place_up = posx(tx, ty, tz + safe_dz, rx, ry, rz)
+        # pick_up = posx(px, py, pz + safe_dz, rx, ry, rz)
+        # place_up = posx(tx, ty, tz + safe_dz, rx, ry, rz)
+
+        # # ---- 접근 & 집기 ----
+        # gripper_open()
+        # movel(pick_up, vel=vel_approach, acc=acc_approach)
+        # movel(posx(0, 0, -120, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+        # gripper_close()
+        # movel(posx(0, 0, 200, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+
+        # # ---- 이동 & 놓기 ----
+        # movel(place_up, vel=vel_approach, acc=acc_approach)
+        # movel(posx(0, 0, -100, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+        # gripper_open()
+        # movel(posx(0, 0, 200, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+        space_gap = 100
+
+        first_pick_up = posx(px - space_gap, py, pz + safe_dz, rx, ry, rz)
+        first_place_up = posx(tx, ty, tz + safe_dz, rx, ry, rz)
 
         # ---- 접근 & 집기 ----
         gripper_open()
-        movel(pick_up, vel=vel_approach, acc=acc_approach)
-        movel(posx(0, 0, -120, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+        movel(first_pick_up, vel=vel_approach, acc=acc_approach)
+        movel(
+            posx(space_gap, 0, -120, 0, 0, 0),
+            mod=DR_MV_MOD_REL,
+            vel=vel_work,
+            acc=acc_work,
+        )
+        # movel(
+        #     posx(space_gap, 0, 0, 0, 0, 0),
+        #     mod=DR_MV_MOD_REL,
+        #     vel=vel_work,
+        #     acc=acc_work,
+        # )
         gripper_close()
         movel(posx(0, 0, 200, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
 
-        # ---- 이동 & 놓기 ----
-        movel(place_up, vel=vel_approach, acc=acc_approach)
+        # # ---- 이동 & 놓기 ----
+        movel(first_place_up, vel=vel_approach, acc=acc_approach)
         movel(posx(0, 0, -100, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
         gripper_open()
         movel(posx(0, 0, 200, 0, 0, 0), mod=DR_MV_MOD_REL, vel=vel_work, acc=acc_work)
+        movel(
+            posx(-space_gap, 0, 0, 0, 0, 0),
+            mod=DR_MV_MOD_REL,
+            vel=vel_work,
+            acc=acc_work,
+        )
 
     # ===== 메인 루틴 내용 =====
     gripper_open()
 
     # 3개 pick / place 좌표
     pick_points = [
-        (255.0, -202.0),  # 1번
+        # (255.0, -202.0),  # 1번
         (370.0, -202.0),  # 2번
-        (370.0, -72.0),  # 3번
+        # (370.0, -72.0),  # 3번
     ]
 
     place_points = [
-        (256.24, 161.58),  # 1번
-        (556.24, 161.58),  # 2번
+        # (256.24, 161.58),  # 1번
+        # (556.24, 161.58),  # 2번
         (556.24, -138.42),  # 3번
     ]
 
     z_pick = 250.0
     z_place = 250.0
+    n = len(pick_points)
 
-    for i in range(3):
+    for i in range(n):
         px, py = pick_points[i]
         tx, ty = place_points[i]
-        print(f"[{i+1}/3] pick ({px}, {py}, {z_pick}) -> place ({tx}, {ty}, {z_place})")
+        print(
+            f"[{i+1}/{n}] pick ({px}, {py}, {z_pick}) -> place ({tx}, {ty}, {z_place})"
+        )
         pick_and_place(px, py, z_pick, tx, ty, z_place)
 
+    # ===== 종료 자세 =====
+    J0 = posj(0, 0, 90, 0, 90, 0)
+    movej(J0, vel=VELOCITY_J, acc=ACC_J)
     print("=== Task finished ===")
 
 
