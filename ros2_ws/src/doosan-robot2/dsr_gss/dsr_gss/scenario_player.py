@@ -80,11 +80,12 @@ def perform_task():
 
     # === Step scenario 정의 부분 ===========================================
     def step1():
-            # ==========================
-    #  땅 파기용 전용 동작 함수들
-    # ==========================
+        # ==========================
+        #  땅 파기용 전용 동작 함수들
+        # ==========================
+        
 
-    # ■ 삽을 아래로 밀어넣는 동작
+        # ■ 삽을 아래로 밀어넣는 동작
         def dig():
             movel([0, 35, 0, 0, 0, 0],
                 v=VELOCITY, a=ACC,
@@ -208,7 +209,7 @@ def perform_task():
         info("===== 땅 파기 작업 시작 =====")
         # ■ 두 군데 땅 파기 지점 지정
         target1 = posx([305, -195, 0, 0, 0, 0])
-        target2 = posx([0, 120, 0, 0, 0, 0])
+        target2 = posx([5, 120, 0, 0, 0, 0])
         target_list = [target1, target2]
 
         # 시작: 기본자세 + 삽 해제
@@ -241,7 +242,7 @@ def perform_task():
         movel([0, 60, 0, 0, 0, 0],
             v=VELOCITY, a=ACC,
             ref=DR_BASE, mod=DR_MV_MOD_REL)
-        movel([0, 0, -70, 0, 0, 0],
+        movel([0, 0, -65, 0, 0, 0],
             v=VELOCITY, a=ACC,
             ref=DR_BASE, mod=DR_MV_MOD_REL)
         release()
@@ -252,7 +253,6 @@ def perform_task():
 
         # Step 4) 홈 포지션으로 완료
         home()
-        
         info("===== 땅 파기 작업 완료 =====")
 
     def step2():

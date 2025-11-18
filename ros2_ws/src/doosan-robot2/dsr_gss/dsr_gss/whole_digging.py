@@ -84,7 +84,7 @@ def perform_task():
 
     # ■ Z축으로 올라오기
     def up():
-        movel([0, 0, 70, 0, 0, 0],
+        movel([0, 0, 68, 0, 0, 0],
               v=VELOCITY, a=ACC,
               ref=DR_BASE, mod=DR_MV_MOD_REL)
 
@@ -154,32 +154,24 @@ def perform_task():
               ref=DR_BASE, mod=DR_MV_MOD_ABS)
 
         # 6) 땅에서 빼내면서 앞으로 이동
-        print(">>> Start first movel")
         movel([0, 50, 0, 0, 0, 0],  # 상대 +y
               v=VELOCITY, a=ACC,
               ref=DR_BASE, mod=DR_MV_MOD_REL)
-        print(">>> Finished first movel")
 
         # 7) 위로 빼기
-        print(">>> Calling up()")
         up()
-        print(">>> Returned from up()")
 
         # 8) 버리는 장소 = home()로 복귀
-        print(">>> Starting second movel")
         home()
-        print(">>> Finished second movel")
 
         # 9) 삽 털기 위한 회전
         movej([-90, 0, 0, 0, 0, 0],
               v=VELOCITY, a=ACC,
               mod=DR_MV_MOD_REL)
-        print(">>> Final movel rotation")
 
         movej([0, 0, 0, 0, -90, 0],
               v=VELOCITY, a=ACC,
               mod=DR_MV_MOD_REL)
-        print(">>> Task done")
 
         # 10) 다시 기본자세로
         home()
@@ -190,7 +182,7 @@ def perform_task():
 
     # ■ 두 군데 땅 파기 지점 지정
     target1 = posx([305, -195, 0, 0, 0, 0])
-    target2 = posx([0, 120, 0, 0, 0, 0])
+    target2 = posx([5, 120, 0, 0, 0, 0])
     target_list = [target1, target2]
 
     # 시작: 기본자세 + 삽 해제
@@ -223,7 +215,7 @@ def perform_task():
     movel([0, 60, 0, 0, 0, 0],
           v=VELOCITY, a=ACC,
           ref=DR_BASE, mod=DR_MV_MOD_REL)
-    movel([0, 0, -70, 0, 0, 0],
+    movel([0, 0, -65, 0, 0, 0],
           v=VELOCITY, a=ACC,
           ref=DR_BASE, mod=DR_MV_MOD_REL)
     release()
