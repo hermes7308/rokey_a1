@@ -92,17 +92,18 @@ def perform_task():
 
         pz = 250.0  # z_pick
         tz = 250.0  # z_place
+        space_gap = 100
 
         pick_points = [
             # (255.0, -202.0),  # 1번
-            (370.0, -202.0),  # 2번
-            # (370.0, -72.0),  # 3번
+            (370.0, -202.0),  # 3번
+            (370.0, -72.0),  # 2번
         ]
 
         place_points = [
-            # (256.24, 161.58),  # 1번
-            # (556.24, 161.58),  # 2번
+            # (556.24, 161.58),  # 1번
             (556.24, -138.42),  # 3번
+            (256.24, 161.58),  # 2번
         ]
 
         if len(pick_points) != len(place_points):
@@ -118,7 +119,6 @@ def perform_task():
             px, py = pick_points[i]
             tx, ty = place_points[i]
             info(f"[{i+1}/{n}] pick ({px}, {py}, {pz}) -> place ({tx}, {ty}, {tz})")
-            space_gap = 100
 
             first_pick_up = posx(px - space_gap, py, pz + safe_dz, rx, ry, rz)
             first_place_up = posx(tx, ty, tz + safe_dz, rx, ry, rz)
@@ -152,10 +152,11 @@ def perform_task():
                 vel=vel_work,
                 acc=acc_work,
             )
+            
+            # 심은 묘목 갯수 증가
+            increase_planted_count()
 
         move_to_home()
-        # 심은 묘목 갯수 증가
-        increase_planted_count()
         info("===== 묘목 심기 종료 =====")
 
     def step3():
