@@ -38,156 +38,203 @@ def initialize_robot():
 
 def perform_task():
     print("Performing task...")
-    from DSR_ROBOT2 import (posx, posj,
-                            movej,
-                            movel,
-                            DR_MV_MOD_REL,
-                            DR_MV_MOD_ABS,
-                            set_digital_output,
-                            ON, OFF, DR_TOOL,
-                            DR_BASE,
-                            get_current_posx, wait, movec, movejx
-                            )
-    
-#-------------------------------------------------------
+
+    # ===== 필요한 Doosan API 불러오기 =====
+    from DSR_ROBOT2 import (
+        posx, posj,
+        movej, amovej,    # 조인트 이동
+        movel, amovel,    # Cartesian 이동
+        DR_MV_MOD_REL,    # 상대 이동 모드
+        DR_MV_MOD_ABS,    # 절대 이동 모드
+        set_digital_output,
+        ON, OFF,
+        DR_TOOL,          # 공구 좌표계
+        DR_BASE,          # 기본(Base) 좌표계
+        get_current_posx, # 현재 좌표 읽기
+        wait
+    )
+
+    # ==========================
+    #  땅 파기용 전용 동작 함수들
+    # ==========================
+
+    # ■ 삽을 아래로 밀어넣는 동작
     def dig():
-        movel([0, 35, 0, 0, 0, 0], v = VELOCITY, a = ACC, ref = DR_TOOL, mod = DR_MV_MOD_REL)
-#-------------------------------------------------------
+        movel([0, 35, 0, 0, 0, 0],
+              v=VELOCITY, a=ACC,
+              ref=DR_TOOL, mod=DR_MV_MOD_REL)
+
+    # ■ 삽 파기 자세(굴절 + 회전)로 변형
     def change_formation():
-        movel([0, 0, 0, 90, 45, 0], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-        movej([0, 0, 0, 0, 0, 90], v = VELOCITY, a = ACC, mod = DR_MV_MOD_REL)
-#-------------------------------------------------------
+        # End-Effector 회전 (기울이기)
+        amovel([0, 0, 0, 90, 45, 0],
+               v=VELOCITY, a=ACC,
+               ref=DR_BASE, mod=DR_MV_MOD_REL)
+
+        # Tool 자체 회전 (yaw 회전)
+        movej([0, 0, 0, 0, 0, 90],
+              v=VELOCITY, a=ACC,
+              mod=DR_MV_MOD_REL)
+
+    # ■ Z축으로 내려가기
     def down():
-        movel([0,0,-70,0,0,0], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-#-------------------------------------------------------
+        movel([0, 0, -68, 0, 0, 0],
+              v=VELOCITY, a=ACC,
+              ref=DR_BASE, mod=DR_MV_MOD_REL)
+
+    # ■ Z축으로 올라오기
     def up():
-        movel([0,0,70,0,0,0], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-#-------------------------------------------------------
-    def move_target(pos, v=VELOCITY, a=ACC, ref=DR_BASE, mod=DR_MV_MOD_ABS):
+        movel([0, 0, 70, 0, 0, 0],
+              v=VELOCITY, a=ACC,
+              ref=DR_BASE, mod=DR_MV_MOD_REL)
+
+    # ■ 절대좌표로 목표 땅 파기 위치 이동
+    def move_target(pos, v=VELOCITY, a=ACC,
+                    ref=DR_BASE, mod=DR_MV_MOD_ABS):
         movel(pos, v=v, a=a, ref=ref, mod=mod)
-#-------------------------------------------------------
+
+    # ■ Tool Box(삽 위치)로 이동하는 경유점 경로
     def move_toolbox():
-    # 초기 위치 및 목표 위치 설정
-        # movel([0, 0, 0, 0, 90, 0], v = VELOCITY, a = ACC, mod = DR_MV_MOD_REL)
         mid_point1 = posj([-92.55, 29.43, 59.55, 1.13, 85.2, -89])
         mid_point2 = posj([-88.69, 29.25, 64.38, -94.96, 92.09, -88.99])
-        toolbox = posx([-491.03, -352.87, 222.27, 91.40, 86.8, 90.18])
-        movej(mid_point1, v = VELOCITY, a = ACC, mod = DR_MV_MOD_ABS)
-        movej(mid_point2, v = VELOCITY, a = ACC, mod = DR_MV_MOD_ABS)
-        movel(toolbox, v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_ABS)
- 
-#-------------------------------------------------------
+        toolbox    = posx([-491.03, -352.87, 222.27, 91.40, 86.8, 90.18])
+
+        # 안정적인 접근을 위해 두 개의 중간자세 사용
+        movej(mid_point1, v=VELOCITY, a=ACC, mod=DR_MV_MOD_ABS)
+        movej(mid_point2, v=VELOCITY, a=ACC, mod=DR_MV_MOD_ABS)
+        movel(toolbox,  v=VELOCITY, a=ACC,
+              ref=DR_BASE, mod=DR_MV_MOD_ABS)
+
+    # ■ 삽 잡기
     def grip():
         set_digital_output(1, ON)
         set_digital_output(2, OFF)
-#-------------------------------------------------------
+
+    # ■ 삽 놓기
     def release():
         set_digital_output(1, OFF)
         set_digital_output(2, ON)
-#-------------------------------------------------------
+
+    # ■ 기본 자세로 이동
     def home():
-        JReady = ([0, 0, 90, 0, 90, 0])
-        movej(JReady, v = 30, a = ACC)
-#-------------------------------------------------------
-    def change_formation():
-        movel([0, 0, 0, 90, 45, 0], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-        movej([0, 0, 0, 0, 0, 90], v = VELOCITY, a = ACC, mod = DR_MV_MOD_REL)
-#-------------------------------------------------------
+        j_ready = [0, 0, 90, 0, 90, 0]
+        movej(j_ready, v=30, a=ACC)
+
+    # ■ get_current_posx 반환값을 통일된 리스트로 변환
+    def to_pos_list(p):
+        if isinstance(p, dict):
+            return list(p["posx"])
+        if isinstance(p, (list, tuple)):
+            if len(p) >= 6 and isinstance(p[0], (int, float)):
+                return list(p[:6])
+            if len(p) >= 1 and isinstance(p[0], (list, tuple)):
+                return list(p[0][:6])
+        raise RuntimeError(f"get_current_posx() 형식 이상: {p}")
+
+    # ■ “한 지점에서 땅 파고, 옮기고, 버리기” 전체 동작 패키지
     def whole_digging():
 
+        # 1) 삽을 내리고
         down()
 
-        a = get_current_posx()
+        # 2) 현재 위치 저장 (절대 복귀용)
+        curr1 = to_pos_list(get_current_posx())
 
-        if isinstance(a, dict):
-            curr1 = a['posx']
-
-        elif isinstance(a, (list, tuple)):
-            if len(a) >= 6 and isinstance(a[0], (int, float)):
-                curr1 = list(a[:6])
-            elif len(a) >= 1 and isinstance(a[0], (list, tuple)):
-                curr1= list(a[0][:6])
-            else:
-                raise RuntimeError(f"get_current_posx() 반환 형식을 못 알아먹겠음: {a}")
-        else:
-            raise RuntimeError(f"get_current_posx() 타입이 이상함: {type(a)}, {a}")
-
+        # 3) 땅 파기
         dig()
 
-        b = get_current_posx()
-
-        if isinstance(b, dict):
-            curr2 = b['posx']
-
-            # 2) 튜플/리스트 형태인 경우
-        elif isinstance(b, (list, tuple)):
-                # a가 [x,y,z,rx,ry,rz] 이런 1차원 리스트면
-            if len(b) >= 6 and isinstance(b[0], (int, float)):
-                curr2 = list(b[:6])
-                # a가 ([x,y,z,rx,ry,rz], ref) 이런 2중 구조면
-            elif len(b) >= 1 and isinstance(b[0], (list, tuple)):
-                    curr2 = list(b[0][:6])
-            else:
-                raise RuntimeError(f"get_current_posx() 반환 형식을 못 알아먹겠음: {a}")
-        else:
-            raise RuntimeError(f"get_current_posx() 타입이 이상함: {type(a)}, {a}")
-        curr2[1] = curr2[1] - 100
-
-        curr2[2] = curr2[2] - 80
-
+        # 4) 파고난 후 깊이·자세 조정한 새 좌표 생성
+        curr2 = to_pos_list(get_current_posx())
+        curr2[1] -= 100     # y축 뒤로 이동
+        curr2[2] -= 78      # z축 아래 조정
         curr2[3], curr2[4], curr2[5] = 90, 180, 90
 
-        movel(curr2, v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_ABS)
+        # 5) 새 위치로 이동 (절대)
+        movel(curr2, v=VELOCITY, a=ACC,
+              ref=DR_BASE, mod=DR_MV_MOD_ABS)
 
+        # 6) 땅에서 빼내면서 앞으로 이동
         print(">>> Start first movel")
-        # movel([0, 0, 0, 0, 0, 0], v=VELOCITY, a=ACC, ref=DR_BASE, mod=DR_MV_MOD_REL)
-        movel([0, 50, 0, 0, 0, 0], v=VELOCITY, a=ACC, ref=DR_BASE, mod=DR_MV_MOD_REL)
+        movel([0, 50, 0, 0, 0, 0],  # 상대 +y
+              v=VELOCITY, a=ACC,
+              ref=DR_BASE, mod=DR_MV_MOD_REL)
         print(">>> Finished first movel")
 
+        # 7) 위로 빼기
         print(">>> Calling up()")
         up()
         print(">>> Returned from up()")
 
+        # 8) 버리는 장소 = home()로 복귀
         print(">>> Starting second movel")
-        # 버리는 곳 위치 정해서 절대 좌표로 진행
-        # movel([-30, 0, 0, 0, 0, 0], v=VELOCITY, a=ACC, ref=DR_BASE, mod=DR_MV_MOD_REL)
         home()
         print(">>> Finished second movel")
 
+        # 9) 삽 털기 위한 회전
+        movej([-90, 0, 0, 0, 0, 0],
+              v=VELOCITY, a=ACC,
+              mod=DR_MV_MOD_REL)
         print(">>> Final movel rotation")
-        movel([0, 0, 0, 0, -45, 0], v=VELOCITY, a=ACC, mod=DR_MV_MOD_REL)
+
+        movej([0, 0, 0, 0, -90, 0],
+              v=VELOCITY, a=ACC,
+              mod=DR_MV_MOD_REL)
         print(">>> Task done")
 
+        # 10) 다시 기본자세로
+        home()
 
-        movel(curr1, v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_ABS)
+    # ======================================
+    #  메인 동작 시퀀스
+    # ======================================
 
-        up()
-#-------------------------------------------------------
+    # ■ 두 군데 땅 파기 지점 지정
+    target1 = posx([305, -195, 0, 0, 0, 0])
+    target2 = posx([0, 120, 0, 0, 0, 0])
+    target_list = [target1, target2]
 
-    target1 = posx([305, -190, 0, 0, 0, 0])
-    target2 = posx([0, 200, 0, 0, 0, 0])
-    target3 = posx([-300, 0, 0, 0, 0, 0])
-    target = [target1, target2, target3]
-    
-    # home()
-
-    # release()
-    # move_toolbox()
-
-    # movel([0, 60, 0, 0, 0, 0], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-    # grip()
-    # wait(1)
-    # up()
-    # wait(1)
-    
+    # 시작: 기본자세 + 삽 해제
     home()
-    
-    change_formation()
-    for i in range(len(target)):
-        move_target(target[i], v = VELOCITY, a = ACC, ref = DR_BASE, mod = DR_MV_MOD_REL)
-        whole_digging()
+    release()
 
+    # Step 1) ToolBox에서 삽 들기
+    move_toolbox()
+    movel([0, 60, 0, 0, 0, 0],
+          v=VELOCITY, a=ACC,
+          ref=DR_BASE, mod=DR_MV_MOD_REL)
+    grip()
+    wait(1)
+    up()
+    wait(1)
+
+    # Step 2) 기본자세 복귀 후 땅 파기 시작
     home()
+
+    for tgt in target_list:
+        change_formation()                       # 땅 파기용 자세 변형
+        move_target(tgt, v=VELOCITY, a=ACC,
+                    ref=DR_BASE, mod=DR_MV_MOD_REL)
+        whole_digging()                          # 전체 파기 동작 실행
+
+    # Step 3) 작업 종료 → 삽 반납
+    home()
+    move_toolbox()
+    up()
+    movel([0, 60, 0, 0, 0, 0],
+          v=VELOCITY, a=ACC,
+          ref=DR_BASE, mod=DR_MV_MOD_REL)
+    movel([0, 0, -70, 0, 0, 0],
+          v=VELOCITY, a=ACC,
+          ref=DR_BASE, mod=DR_MV_MOD_REL)
+    release()
+    wait(1)
+    movel([0, -60, 0, 0, 0, 0],
+          v=VELOCITY, a=ACC,
+          ref=DR_BASE, mod=DR_MV_MOD_REL)
+
+    # Step 4) 홈 포지션으로 완료
+    home()
+
 
 def main(args=None):
     """메인 함수: ROS2 노드 초기화 및 동작 수행"""
