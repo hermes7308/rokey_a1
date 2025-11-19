@@ -30,6 +30,9 @@ class ErrorChecker(Node):
         if msg.level == 1:
             return
 
+        if msg.code == 1206: # NOT REACHERABLE
+            return
+
         error(
             f"System error 발생!!! level: {msg.level}, group: {msg.group}, code: {msg.code}, msg1: '{msg.msg1}', msg2: '{msg.msg1}', msg3: '{msg.msg1}' "
         )
