@@ -30,8 +30,9 @@ setup(
             "scenario_manager = dsr_gss.scenario_manager:main",
             "move_action_manager = dsr_gss.move_action_manager:main",
             "scenario_player = dsr_gss.scenario_player:main",
-            'dig_test = dsr_gss.dig_test:main',
-            'test = dsr_gss.test:main'
+            "error_checker = dsr_gss.error_checker:main",
+            "dig_test = dsr_gss.dig_test:main",
+            "test = dsr_gss.test:main",
         ],
     },
 )

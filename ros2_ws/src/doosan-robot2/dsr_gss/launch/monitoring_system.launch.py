@@ -85,10 +85,10 @@ def generate_launch_description():
                 executable="scenario_manager",
                 name="scenario_manager",
             ),
-            # Node(
-            #     package="dsr_gss",
-            #     executable="move_action_manager",
-            #     name="move_action_manager",
-            # ),
+            Node(
+                package="dsr_gss",
+                executable="error_checker",
+                name="error_checker",
+            ),
         ]
     )
