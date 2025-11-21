@@ -6,7 +6,7 @@
 ## UI(client)
 https://rokey-gss.sillasol.com/
 
-![모니터링 시스템 UI](./img/모니터링%20UI.png)
+[![모니터링 시스템 UI](./img/모니터링%20UI.png)](https://rokey-gss.sillasol.com/)
 
 
 ## ~~Backend(server)~~
