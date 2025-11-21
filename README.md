@@ -1,13 +1,11 @@
 # GreenSookSook(그린쑥쑥)
 [![YouTube Video](./img/땅파기%20GIF.gif)](https://www.youtube.com/watch?v=c1AEiPoSjH8)
-* 위에 영상을 **클릭**, 저희 프로젝트 전체 영상을 보실수 있습니다.
+https://www.youtube.com/watch?v=c1AEiPoSjH8
 
 
 ## UI(client)
-https://rokey-gss.sillasol.com/
-
 [![모니터링 시스템 UI](./img/모니터링%20UI.png)](https://rokey-gss.sillasol.com/)
-
+https://rokey-gss.sillasol.com/
 
 ## ~~Backend(server)~~
 처음에 사용하려고 했으나 Firebase 특성상 필요 없어 사용하지 않음
