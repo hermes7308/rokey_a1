@@ -3,6 +3,9 @@
 ## UI(client)
 https://rokey-gss.sillasol.com/
 
+## ~~Backend(server)~~
+처음에 사용하려고 했으나 Firebase 특성상 필요 없어 사용하지 않음
+
 ## ROS2(ros2_ws)
 
 ### Python Dependencies
