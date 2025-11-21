@@ -1,11 +1,7 @@
 # GreenSookSook(그린쑥쑥)
 
 ## UI(client)
-
-## Backend(server)
-```
-pip3 install firebase-admin Flask flask-cors
-```
+https://rokey-gss.sillasol.com/
 
 ## ROS2(ros2_ws)
 
