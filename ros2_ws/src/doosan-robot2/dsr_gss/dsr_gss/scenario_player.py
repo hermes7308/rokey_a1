@@ -105,7 +105,7 @@ def perform_task():
 
         # ■ Z축으로 내려가기
         def down():
-            movel([0, 0, -68, 0, 0, 0],
+            movel([0, 0, -63, 0, 0, 0],
                 v=VELOCITY, a=ACC,
                 ref=DR_BASE, mod=DR_MV_MOD_REL)
 
