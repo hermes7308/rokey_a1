@@ -1,4 +1,7 @@
 # GreenSookSook(그린쑥쑥)
+[![YouTube Video](./img/땅파기%20GIF.gif)](https://www.youtube.com/watch?v=c1AEiPoSjH8)
+* 위에 영상을 **클릭**, 저희 프로젝트 전체 영상을 보실수 있습니다.
+
 
 ## UI(client)
 https://rokey-gss.sillasol.com/
@@ -56,7 +59,11 @@ ros2_ws
 show_ros_info
 
 ```
-
+### 개발 Package 경로
+```
+# 여기를 보시면, 저희가 구현한 부분을 확인 하실수 있습니다.
+ros2_ws/src/doosan-robot2/dsr_gss 
+```
 
 ### 로봇 실행
 #### virtual
@@ -67,7 +74,7 @@ ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=virtual host:=127.0.
 ```
 ros2 launch  dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=real host:=192.168.1.100 port:=12345 model:=m0609
 ```
-
+---
 #### DSR_GSS 모니터링 시스템 실행
 ##### virtual
 ```
