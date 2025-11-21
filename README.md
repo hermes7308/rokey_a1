@@ -6,6 +6,9 @@
 ## UI(client)
 https://rokey-gss.sillasol.com/
 
+![모니터링 시스템 UI](./img/모니터링%20UI.png)
+
+
 ## ~~Backend(server)~~
 처음에 사용하려고 했으나 Firebase 특성상 필요 없어 사용하지 않음
 
